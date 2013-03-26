@@ -1,5 +1,5 @@
 from cogent.util.unit_test import TestCase, main  #imports the test platform for Python
-from profile import compare_profiles, normalize_profiles
+from SCGM.profile import compare_profiles, normalize_profiles
 
 
 class ProfileTests(TestCase):
