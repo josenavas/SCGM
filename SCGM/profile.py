@@ -1,3 +1,6 @@
+from qiime.parse import parse_mapping_file_to_dict
+from qiime.filter import sample_ids_from_metadata_description
+
 def normalize_profiles(profiles):
     """Make sure all profiles contain the same taxa keys"""
     if len(profiles) == 0:
@@ -21,7 +24,7 @@ def compare_profiles(profiles):
     if len(profiles) == 0:
         raise ValueError, "Cannot compare an empty list"
     if len(profiles) == 1:
-        raise ValueError, "Cannot compare a profile to itself"
+        raise ValueError, "Cannot compare only one profile"
     result = {}
     share = 0.0
     #Start with the first taxa key of the profiles
@@ -32,4 +35,36 @@ def compare_profiles(profiles):
         result[key] = min([prof[key] for prof in profiles])
         share += result[key]
     result['not_shared'] = 1 - share
+    return result
+
+def make_profile(map_data, sids):
+    profiles = []
+    for sid in sids:
+        profile = {}
+        for key in map_data[sid]:
+            if key.startswith('k_'):
+                profile[key] = float(map_data[sid][key])
+        profiles.append(profile)
+
+    if len(profiles) == 1:
+        profiles[0]['not_shared'] = 0.0
+        return profiles[0]
+
+    return compare_profiles(normalize_profiles(profiles))
+
+def make_profile_from_mapping(mapping_fp, category="SEX"):
+    map_f = open(mapping_fp, 'U')
+    mapping_data, comments = parse_mapping_file_to_dict(map_f)
+    map_f.close()
+
+    values = set([mapping_data[sid][category] for sid in mapping_data])
+
+    result = {}
+    for value in values:
+        map_f = open(mapping_fp, 'U')
+        sids = sample_ids_from_metadata_description(map_f, category+":"+value)
+        map_f.close()
+
+        result[value] = make_profile(mapping_data, sids)
+
     return result

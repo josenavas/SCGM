@@ -10,8 +10,7 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from qiime.util import parse_command_line_parameters, make_option
-from qiime.parse import parse_mapping_file_to_dict
-from qiime.filter import sample_ids_from_metadata_description
+from SCGM.profile import make_profile_from_mapping
 
 script_info = {}
 script_info['brief_description'] = """"""
@@ -29,16 +28,9 @@ script_info['version'] = __version__
 
 if __name__ == "__main__":
 	option_parser, opts, args = parse_command_line_parameters(**script_info)
+	result = make_profile_from_mapping(opts.mapping_fp)
 
-	input_fp = opts.input_fp
-	open_fp = open(input_fp, 'U')
-
-	mapping_data, comments = parse_mapping_file_to_dict(open_fp)
-
-	open_fp.close()
-	open_fp = open(input_fp, 'U')
-	result = sample_ids_from_metadata_description(open_fp, "HOST_SUBJECT_ID:*")
-
-	print result
-
-	print mapping_data.keys()
+	for sid in result:
+		print sid
+		print "\n"
+		print result[sid]

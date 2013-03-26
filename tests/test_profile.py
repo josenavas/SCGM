@@ -25,12 +25,11 @@ class ProfileTests(TestCase):
             self.assertAlmostEquals(result[key], exresult[key])
 
     def test_compare_profiles_fail(self):
-        '''Make sure error raised when given an empty list or single profile'''
+        '''Make sure error raised when given an empty list or a single profile'''
         #empty list check
         self.assertRaises(ValueError, compare_profiles, [])
         #single profile check
-        self.assertRaises(ValueError, compare_profiles,
-            [{'taxa1': 0.20, 'taxa2': 0.30}])
+        self.assertRaises(ValueError, compare_profiles, [{'taxa1': 0.20, 'taxa2': 0.30}])
 
     def test_normalize_profiles_fail(self):
         '''Make sure error raised when given an empty list or single profile'''
