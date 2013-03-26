@@ -52,7 +52,7 @@ def make_profile(map_data, sids):
 
     return compare_profiles(normalize_profiles(profiles))
 
-def make_profile_from_mapping(mapping_fp, category="SEX"):
+def make_profile_from_mapping(mapping_fp, category="HOST_SUBJECT_ID"):
     map_f = open(mapping_fp, 'U')
     mapping_data, comments = parse_mapping_file_to_dict(map_f)
     map_f.close()
