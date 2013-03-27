@@ -10,7 +10,7 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from qiime.util import parse_command_line_parameters, make_option
-from SCGM.profile import make_profile_from_mapping
+from SCGM.core import make_core_profile
 
 script_info = {}
 script_info['brief_description'] = """"""
@@ -18,19 +18,30 @@ script_info['script_description'] = """"""
 script_info['script_usage'] = []
 script_info['output_description'] = """"""
 script_info['required_options'] = [
-	make_option('-m', '--mapping_fp', type='existing_filepath',
-		help="Mapping filepath result of summarize_taxa.py"),
-	make_option('-c', '--category', type='string',
-		help="Mapping file category")
+	make_option('-m', '--mapping_fps', type='existing_filepaths',
+		help="Mapping filepaths result of summarize_taxa.py"),
 ]
-script_info['optional_options'] = []
+script_info['optional_options'] = [
+	make_option('-c', '--categories', type='string',
+		default=None,
+		help="Mapping file categories"),
+]
 script_info['version'] = __version__
 
 if __name__ == "__main__":
 	option_parser, opts, args = parse_command_line_parameters(**script_info)
-	result = make_profile_from_mapping(opts.mapping_fp)
+	
+	map_files = opts.mapping_fps
 
-	for sid in result:
-		print sid
-		print "\n"
-		print result[sid]
+	categories = None
+
+	if opts.categories:	
+		categories = opts.categories.split(',')
+
+		if len(map_files) != len(categories):
+			raise ValueError, "Must supply a category for each mapping file"
+
+	lista = make_core_profile(map_files, categories)
+
+	for l in lista:
+		print l
