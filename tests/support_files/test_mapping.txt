@@ -1,0 +1,4 @@
+#SampleID	HOST_SUBJECT_ID	map_h	k_kingdom1	k_kingdom2	k_kingdom3
+sid1	hsid_1	value1	0.2	0.5	0.3
+sid2	hsid_2	value1	0.5	0.3	0.2
+sid3	hsid_3	value2	0.3	0.2	0.5

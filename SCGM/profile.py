@@ -34,7 +34,7 @@ def compare_profiles(profiles):
         #Find the minimum for the given taxa unit in the profiles
         result[key] = min([prof[key] for prof in profiles])
         share += result[key]
-    result['not_shared'] = 1 - share
+    result['not_shared'] = 1.0 - share
     return result
 
 def make_profile(map_data, sids):
