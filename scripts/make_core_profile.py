@@ -12,7 +12,6 @@ __status__ = "Development"
 from qiime.util import parse_command_line_parameters, make_option
 from SCGM.core import make_core_profile
 
-
 script_info = {}
 script_info['brief_description'] = """"""
 script_info['script_description'] = """"""
@@ -42,7 +41,7 @@ if __name__ == "__main__":
         if len(map_files) != len(categories):
             raise ValueError, "Must supply a category for each mapping file"
 
-    core_profile = make_core_profile(map_files, categories)
+    lista = make_core_profile(map_files, categories)
 
-    for t in core_profile:
-        print t, ":", core_profile[t]
+    for l in lista:
+        print l
