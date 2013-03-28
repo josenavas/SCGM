@@ -93,6 +93,7 @@ class ProfileTests(TestCase):
             self.assertAlmostEquals(result[key], exresult[key])
 
     def test_make_profile(self):
+        ''' Creating profile from mapping file data '''
         sids = ['sid1']
         obs = make_profile(self.map_data, sids)
         exp = {
@@ -132,6 +133,7 @@ class ProfileTests(TestCase):
             self.assertAlmostEquals(obs[key], exp[key])
 
     def test_make_profile_from_mapping(self):
+        ''' Creating profile from a mapping file filepath '''
         obs = make_profile_from_mapping(self.mapping_fp)
         exp = {
             'hsid_1' : {

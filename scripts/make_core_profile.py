@@ -18,30 +18,30 @@ script_info['script_description'] = """"""
 script_info['script_usage'] = []
 script_info['output_description'] = """"""
 script_info['required_options'] = [
-	make_option('-m', '--mapping_fps', type='existing_filepaths',
-		help="Mapping filepaths result of summarize_taxa.py"),
+    make_option('-m', '--mapping_fps', type='existing_filepaths',
+        help="Mapping filepaths result of summarize_taxa.py"),
 ]
 script_info['optional_options'] = [
-	make_option('-c', '--categories', type='string',
-		default=None,
-		help="Mapping file categories"),
+    make_option('-c', '--categories', type='string',
+        default=None,
+        help="Mapping file categories"),
 ]
 script_info['version'] = __version__
 
 if __name__ == "__main__":
-	option_parser, opts, args = parse_command_line_parameters(**script_info)
-	
-	map_files = opts.mapping_fps
+    option_parser, opts, args = parse_command_line_parameters(**script_info)
 
-	categories = None
+    map_files = opts.mapping_fps
 
-	if opts.categories:	
-		categories = opts.categories.split(',')
+    categories = None
 
-		if len(map_files) != len(categories):
-			raise ValueError, "Must supply a category for each mapping file"
+    if opts.categories:
+        categories = opts.categories.split(',')
 
-	lista = make_core_profile(map_files, categories)
+        if len(map_files) != len(categories):
+            raise ValueError, "Must supply a category for each mapping file"
 
-	for l in lista:
-		print l
+    lista = make_core_profile(map_files, categories)
+
+    for l in lista:
+        print l
