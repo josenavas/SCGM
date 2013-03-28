@@ -9,11 +9,11 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from SCGM.profile import make_profile_from_mapping, normalize_profiles
+from SCGM.profile import make_profile_from_mapping, normalize_profiles, compare_profiles
 
 
 def get_profiles_list(map_files, categories=None):
-    """Creates a list of profiles for all map files, split by categories 
+    """Creates a list of profiles for all map files, split by categories
 
     map_files: list of filepaths to mapping files
     categories: list of categories, one per map_file, same order as map_files
@@ -38,4 +38,4 @@ def get_profiles_list(map_files, categories=None):
 
 def make_core_profile(map_files, categories=None):
     """ Wrapper function in case other calls are needed """
-    return get_profiles_list(map_files, categories)
+    return compare_profiles(get_profiles_list(map_files, categories))
