@@ -57,7 +57,7 @@ def compare_profiles(profiles):
     return result
 
 def make_profile(map_data, sids):
-    """ Create a comparison profile for the sampe IDs passed 
+    """ Create a comparison profile for the sample IDs passed 
 
         map_data: mapping file data from parse_mapping_file_to_dict()
         sids: list of sample IDs to compare
