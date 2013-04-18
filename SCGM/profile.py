@@ -33,15 +33,18 @@ def normalize_profiles(profiles):
                 profile[key] = 0.0
     return profiles
 
-def compare_profiles(profiles):
-    """Compare the keys over all profiles and take the minimum value
+def compare_profiles(profiles, normalize=False):
+    """ Compare the keys over all profiles and take the minimum value
 
-        profiles: list of sample profiles
+        profiles: list of profiles
+        normalize: if True, the profiles will be normalized before comparison
     """
     if len(profiles) == 0:
         raise ValueError, "Cannot compare an empty list"
     if len(profiles) == 1:
         raise ValueError, "Cannot compare only one profile"
+    if normalize:
+        profiles = normalize_profiles(True)
     result = {}
     share = 0.0
     #Start with the first taxa key of the profiles

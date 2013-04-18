@@ -11,12 +11,49 @@ __status__ = "Development"
 
 VALID_MODELS = ['core', 'gradient', 'subpopulation']
 
+from os.path import join
+from qiime.parse import parse_mapping_file_to_dict
+
 from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, sort_category_values
+from SCGM.profile import make_profile, compare_profiles, normalize_profiles
+from SCGM.stats import bootstrap_profiles
+
+def core_model_test(base_dir, mapping_table, output_dir):
+    """ Tests the core model
+    Inputs:
+        base_dir: base common directory of all mapping files
+        mapping_table: dictionary with the mapping table information
+        output_dir: output directory
+    """
+    profiles = []
+    # Loop through all the mapping files
+    for map_file in mapping_table:
+        # Get the path to the mapping file
+        map_fp = join(base_dir, map_file)
+        # Parse the mapping file in a dictionary
+        map_f = open(map_fp, 'U')
+        mapping_data, comments = parse_mapping_file_to_dict(map_f)
+        map_f.close()
+        # Create a profile for each sample in this mapping file
+        for sid in mapping_data:
+            profiles.append(make_profile(mapping_data, [sid]))
+    # Create a unique profile for all the studies
+    #core_profile = compare_profiles(profiles, normalize=True)
+    bootstrap_profiles(normalize_profiles(profiles))
+
+
+def gradient_model_test(mapping_table, category, sorted_values, output_dir):
+    raise ValueError, "Function not implemented"
+
+def subpopulation_model_test(mapping_table, category, output_dir):
+    raise ValueError, "Function not implemented"
 
 def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
-    """
+    """ Tests the microbiome models listed in 'models'
+
     Inputs:
+        base_dir: base common directory of all mapping files
         lines: mapping table file lines
         models: list of models to test
         category: category to use in the gradient or subpopulation models
@@ -31,7 +68,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     check_exist_filepaths(base_dir, mapping_table_dict.keys())
     # Test the different models
     if 'core' in models:
-        core_model_test(mapping_table_dict, output_dir)
+        core_model_test(base_dir, mapping_table_dict, output_dir)
     if 'gradient' in models:
         sorted_values = sort
         if sort in ['ascendant', 'descendant']:

@@ -58,3 +58,6 @@ def check_exist_filepaths(base_dir, mapping_fps):
         fullpath = join(base_dir, fp)
         if not exists(fullpath):
             raise ValueError, "The mapping file %s does not exists" % fullpath
+
+def sort_category_values(mapping_table, category, sort):
+    raise ValueError, "Function not implemented"
