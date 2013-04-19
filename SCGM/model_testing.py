@@ -16,7 +16,8 @@ from qiime.parse import parse_mapping_file_to_dict
 
 from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, sort_category_values
-from SCGM.profile import make_profile, compare_profiles, normalize_profiles
+from SCGM.profile import make_profile, compare_profiles, normalize_profiles, \
+                            write_profile
 from SCGM.stats import bootstrap_profiles
 
 def core_model_test(base_dir, mapping_table, output_dir):
@@ -38,10 +39,27 @@ def core_model_test(base_dir, mapping_table, output_dir):
         # Create a profile for each sample in this mapping file
         for sid in mapping_data:
             profiles.append(make_profile(mapping_data, [sid]))
-    # Create a unique profile for all the studies
-    #core_profile = compare_profiles(profiles, normalize=True)
-    bootstrap_profiles(normalize_profiles(profiles))
-
+    # Bootstrap profiles to get the results
+    profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
+    # Write the bootstrapped profile
+    profile_fp = join(output_dir, 'core_model_profile.txt')
+    write_profile(profile, profile_fp, bootstrapped=True)
+    # Write the test result
+    output_fp = join(output_dir, 'core_model_result.txt')
+    outf = open(output_fp, 'w')
+    outf.write("Results for the core model test:\n")
+    outf.write("Microbiome model: ")
+    if profile['not_shared'][0] < 0.5:
+        outf.write("Substantial core.\n")
+    elif profile['not_shared'][0] < 1.0:
+        outf.write("Minimal core.\n")
+    else:
+        outf.write('No core\n')
+    outf.write("\nStatistical results (amount shared):\n")
+    outf.write("Mean: %f %%\n" % (mean * 100))
+    outf.write("Standard deviation: %f %%\n" % (stdev * 100))
+    outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
+                 % ((ci[0] * 100), (ci[1] * 100)))
 
 def gradient_model_test(mapping_table, category, sorted_values, output_dir):
     raise ValueError, "Function not implemented"

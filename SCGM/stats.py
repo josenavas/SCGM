@@ -11,9 +11,7 @@ __status__ = "Development"
 
 from numpy import array, mean, std
 from numpy.random import randint
-from scipy.stats import t
-from math import pi as PI
-from math import sqrt
+from qiime.stats import quantile
 from SCGM.profile import compare_profiles
 
 def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
@@ -25,6 +23,12 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
         alpha: defines the confidence interval as 1 - alpha
         repetitions: number of bootstrap iterations
         randfunc: random function for generate the bootstrap samples
+
+    Returns:
+        profile: the bootstrapped profile of the profiles list
+        sample_mean: the bootstrap mean of the amount shared
+        sample_stdev: the bootstrap standard deviation of the amount shared
+        ci: the confidence interval for the bootstrap mean
     """
 
     length = len(profiles)
@@ -42,12 +46,22 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
     boot_shared = array(boot_shared)
     # Get the mean and the standard deviation of the shared data
     sample_mean = mean(boot_shared)
-    sample_std_dev = std(boot_shared)
-    # Compute the confidence interval for the sample mean
-    # Given that the resamples are i.i.d, we can use the 
-    # Central Limit Theorem to compute the confidence interval
-    t_a = t.pdf(alpha/2, length-1)
-    delta = t_a * sample_std_dev / sqrt(length)
-    print sample_mean-delta, sample_mean+delta
-    profile = compare_profiles(profiles)
-    print 1.0 - profile['not_shared']
+    sample_stdev = std(boot_shared)
+    # Compute the confidence interval for the bootstrapped data
+    # using bootstrap percentile interval
+    ci = quantile(boot_shared, [alpha/2, 1-(alpha/2)])
+    # Compute the bootstrapped profile of the profiles list
+    boot_profile = {}
+    for key in profiles[0]:
+        # Get an array with the data for this taxonomy
+        tax_data = [prof[key] for prof in boot_profiles]
+        # Get the mean
+        tax_mean = mean(tax_data)
+        # Get the standard deviation
+        tax_stdev = std(tax_mean)
+        # Get the confidence intervals
+        tax_ci = quantile(tax_data, [alpha/2, 1-(alpha/2)])
+        # Store the values in the bootstrapped profile
+        boot_profile[key] = (tax_mean, tax_stdev, tax_ci[0], tax_ci[1])
+
+    return boot_profile, sample_mean, sample_stdev, ci

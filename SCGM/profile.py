@@ -2,7 +2,8 @@
 
 __author__ = "Jose Antonio Navas Molina"
 __copyright__ = "Copyright 2013, SCGM course project"
-__credits__ = ["Jose Antonio Navas Molina", "Joshua Shorenstein", "Elizabeth Lor"]
+__credits__ = ["Jose Antonio Navas Molina", "Joshua Shorenstein",
+                "Elizabeth Lor"]
 __license__ = "GPL"
 __version__ = "0.0.1-dev"
 __maintainer__ = "Jose Antonio Navas Molina"
@@ -111,3 +112,23 @@ def make_profile_from_mapping(mapping_fp, category="HOST_SUBJECT_ID"):
         result[value] = make_profile(mapping_data, sids)
 
     return result
+
+def write_profile(profile, output_fp, bootstrapped=False):
+    """ Writes the profile to the file output_fp
+
+    Inputs:
+        profile: the profile to be written
+        output_fp: the output filepath
+        bootstrapped: indicates if the profile is a bootstrapped profile
+    """
+    outf = open(output_fp, 'w')
+    sorted_keys = sorted(profile.keys())
+    for k in sorted_keys:
+        if bootstrapped:
+            mean, stdev, ci0, ci1 = profile[k]
+            outf.write('\t'.join([k, str(mean), str(stdev), str(ci0),
+                         str(ci1)]) + '\n')
+        else:
+            value = profile[k]
+            outf.write('\t'.join([k, str(value)]) + '\n')
+    outf.close()
