@@ -173,7 +173,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
             if sort  == 'ascendant':
                 # We have to sort the values in an ascendant manner
                 values = sorted(values)
-            elif sort == 'descendant:'
+            elif sort == 'descendant':
                 # We have to sort the values in a descendant manner
                 values = sorted(values)[::-1]
             else:
