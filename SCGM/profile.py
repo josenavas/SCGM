@@ -92,7 +92,7 @@ def make_profile_from_mapping(mapping_fp, category="HOST_SUBJECT_ID"):
         category: mapping file category to split data over
                   defaults to HOST_SUBJECT_ID
     """
-    #parse the mapping file using qiime function
+    #parse the mapping file
     map_f = open(mapping_fp, 'U')
     mapping_data, comments = parse_mapping_file_to_dict(map_f)
     map_f.close()
@@ -104,7 +104,7 @@ def make_profile_from_mapping(mapping_fp, category="HOST_SUBJECT_ID"):
     #loop over each key found
     for value in values:
         map_f = open(mapping_fp, 'U')
-        #get sample ids that match the key using qiime function
+        #get sample ids that match the value
         sids = sample_ids_from_metadata_description(map_f, category+":"+value)
         map_f.close()
 

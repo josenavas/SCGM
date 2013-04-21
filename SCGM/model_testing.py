@@ -61,11 +61,79 @@ def core_model_test(base_dir, mapping_table, output_dir):
     outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
                  % ((ci[0] * 100), (ci[1] * 100)))
 
-def gradient_model_test(mapping_table, category, sorted_values, output_dir):
-    raise ValueError, "Function not implemented"
+def gradient_model_test(dist_mat, category, sorted_values, output_dir):
+    """ Tests the gradient model in the distance matrix
+    Inputs:
+        dist_mat: profiles distance matrix - sorted by sorted_values
+        category: category used for generate the distance matrix
+        sorted_values: list of category values sorted
+        output_dir: output director
+    """
+    # Write the test result
+    output_fp = join(output_dir, 'gradient_model_test.txt')
+    outf = open(output_fp, 'w')
+    outf.write("Gradient model results:\n")
+    outf.write("\tCategory used: %d\n" % category)
+    outf.write("\tOrder used: %d\n" % ','.join(sorted_values))
+    outf.write("\tGradient model test passed: ")
+    if test_passed:
+        outf.write("Yes\n")
+    else:
+        outf.write("No\n")
+    outf.close()
 
-def subpopulation_model_test(mapping_table, category, output_dir):
-    raise ValueError, "Function not implemented"
+def subpopulation_model_test(dist_mat, category, output_dir):
+    """ Tests the subpopulation model in the profiles distance matrix
+    Inputs:
+        dist_mat: profiles distance matrix
+        category: category used for generate the distance matrix
+        output_dir: output directory
+    """
+    # Write the test result
+    output_fp = join(output_dir, 'subpopulation_model_test.txt')
+    outf = open(output_fp, 'w')
+    outf.write("Subpopulation model results:\n")
+    outf.write("\tCategory used: %s\n" % category)
+    outf.write("\tSubpopulation model test passed: ")
+    # The subpopulation model is followed if the distance matrix is
+    # the identity matrix
+    if is_identity_matrix(dist_mat):
+        outf.write("Yes\n")
+    else:
+        outf.write("No\n")
+    outf.close()
+
+# def subpopulation_model_test(base_dir, mapping_table, category, output_dir):
+#     """ Tests the subpopulation model based on the provided category
+#     Inputs:
+#         base_dir: base common directory for all mapping files
+#         mapping_table: dictionary with the mapping table information
+#         category: category to use for the test
+#         output_dir: output directory
+#     """
+#     profiles = {}
+#     # Loop through all the mapping files
+#     for map_file in mapping_table:
+#         # Get the path to the mapping file
+#         map_fp = join(base_dir, map_file)
+#         # Get the profiles by category value
+#         ret = make_profiles_from_mapping(map_fp,
+#                                         mapping_table[map_file][category])
+#         # Add the profiles in this mapping file to previous profiles
+#         for value in ret:
+#             if value not in profiles:
+#                 profiles[value] = ret[value]
+#             else:
+#                 profiles[value].extend(ret[value])
+#     # Generate a bootstrapped profile for each value in the category
+#     boot_profiles = {}
+#     for value in profiles:
+#         profile, mean, stdev, ci = bootstrap_profiles(profiles[value])
+#         boot_profiles[value] = (profile, mean, stdev, ci[0], ci[1])
+#     # Build distance matrix from boot profiles
+#     dist_mat = build_distance_matrix(boot_profiles)
+#     # If the distance matrix is 
+#     raise ValueError, "Function not implemented"
 
 def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     """ Tests the microbiome models listed in 'models'
@@ -86,13 +154,37 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     check_exist_filepaths(base_dir, mapping_table_dict.keys())
     # Test the different models
     if 'core' in models:
+        # Perform core model testing
         core_model_test(base_dir, mapping_table_dict, output_dir)
-    if 'gradient' in models:
-        sorted_values = sort
-        if sort in ['ascendant', 'descendant']:
-            sorted_values = sort_category_values(mapping_table_dict,
-                                category, sort)
-        gradient_model_test(mapping_table_dict, category, sorted_values,
-                            output_dir)
-    if 'subpopulation' in models:
-        subpopulation_model_test(mapping_table_dict, category, output_dir)
+    if 'gradient' in models or 'subpopulation' in models:
+        # For the gradient and subpopulation models we need to get the 
+        # profiles by category value
+        profiles = get_profiles_by_category(base_dir, mapping_table, category)
+        # Generate a bootstrapped profile for each value in the category
+        boot_profiles = {}
+        for value in profiles:
+            profile, mean, stdev, ci = bootstrap_profiles(profiles[value])
+            boot_profiles[value] = (profile, mean, stdev, ci)
+
+        values = boot_profiles.keys()
+        if 'gradient' in models:
+            # If we have to test the gradient model, we have to use the values
+            # in that category sorted
+            if sort  == 'ascendant':
+                # We have to sort the values in an ascendant manner
+                values = sorted(values)
+            elif sort == 'descendant:'
+                # We have to sort the values in a descendant manner
+                values = sorted(values)[::-1]
+            else:
+                # We use the user defined sort of the values
+                values = sort
+        # Build distance matrix from bootstrapped profiles
+        dist_mat = build_distance_matrix(boot_profiles, values)
+
+        if 'subpopulation' in models:
+            # Perform subpopulation model test
+            subpopulation_model_test(dist_mat, category, output_dir)
+        if 'gradient' in models:
+            # Perform gradient model test
+            gradient_model_test(dist_mat, category, values, output_dir)
