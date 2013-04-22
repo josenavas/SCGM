@@ -63,7 +63,8 @@ def format_matrix_position(mat_pos):
     Inputs:
         mat_pos: the value in the matrix position
     """
-    str_values = map(str, mat_pos)
+    str_values = [mat_pos[0], mat_pos[1], mat_pos[2], mat_pos[3],]
+    str_values = map(str, str_values)
     return '(' + ','.join(str_values) + ')'
 
 def write_similarity_matrix(sim_mat, header, output_fp):
