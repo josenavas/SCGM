@@ -83,11 +83,11 @@ def build_similarity_matrix(profiles, key_order):
         # the amount shared between the profiles in that category values
         profs = profiles[key_order[i]]
         if len(profs) == 1:
-            sim_mat[i, i] = (1.0, 0.0, 1.0, 1.0, profs[0])
+            sim_mat[i, i] = (1.0, 0.0, 1.0, 1.0)
         else:
             val_prof, val_shared, val_stdev, val_ci = bootstrap_profiles(profs)
             sim_mat[i, i] = (val_shared, val_stdev, val_ci[0],
-                                val_ci[1], val_prof)
+                                val_ci[1])
         for j in range(i+1, size):
             # Get a list with the profiles of the two category values
             profs = profiles[key_order[i]]
@@ -97,7 +97,7 @@ def build_similarity_matrix(profiles, key_order):
                 bootstrap_profiles(profs)
             # Save the shared results on the similarity matrix
             sim_mat[i,j] = sim_mat[j,i] = (comp_shared, comp_stdev, comp_ci[0],\
-                                            comp_ci[1], comp_prof)
+                                            comp_ci[1])
     return sim_mat
 
 def is_diagonal_matrix(matrix):

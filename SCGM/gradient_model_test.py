@@ -10,6 +10,47 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from os.path import join
+from SCGM.stats import bootstrap_profiles
+
+def gradient_subarray_check(profiles, sim_mat, sorted_values, i, j):
+    """Checks if the gradient models holds between values i and j"""
+    profs = []
+    for k in range(i, j+1):
+        profs.extend(profiles[k])
+        prof, shared, stdev, ci = bootstrap_profiles(profs)
+        if shared == 0:
+            return False
+    return True
+
+def gradient_model_checks(profiles, sim_mat, sorted_values, n):
+    """Checks if the similarity matrix models a gradient
+    """
+    # First check: sim_mat[0][n-1] == 0
+    if sim_mat[0][n-1][0] > 0:
+        return False
+    # Second check: for all i in [0..n-2] sim_mat[i][i+1] > 0
+    for i in range(n-1):
+        if sim_mat[i][i+1][0] == 0:
+            return False
+    # Third check: for all i,j; i < j such that sim_mat[i][j] > 0
+    # all the values between i and j follows a gradient subarray
+    # We check i == 0 outside the loop
+    for j in range(n-2, 1, -1):
+        if sim_mat[0][j][0] > 0:
+            if not gradient_subarray_check(profiles,sim_mat,sorted_values,0,j):
+                return False
+            # If it holds for the largest j, it holds for smaller j
+            break;
+    # Check i > 0
+    for i in range(1, n):
+        for j in range(n-1, i, -1):
+            if sim_mat[i][j][0] > 0:
+                if not gradient_subarray_check(profiles, sim_mat, sorted_values,
+                                                i, j):
+                    return False
+                break;
+    # All the checks passed, return True
+    return True
 
 def gradient_model_test(profiles, sim_mat, category, sorted_values, output_dir):
     """ Tests the gradient model in the similarity matrix
@@ -19,31 +60,6 @@ def gradient_model_test(profiles, sim_mat, category, sorted_values, output_dir):
         sorted_values: list of category values sorted
         output_dir: output director
     """
-    n = len(sorted_values)
-    # First check: sim_mat[0][n-1] == 0
-    test_passed = True if sim_mat[0][n-1][0] == 0 else False
-    # Second check: for all i in [0..n-2] sim_mat[i][i+1] > 0
-    if test_passed:
-        for i in range(n-1):
-            if sim_mat[i][i+1][0] > 0:
-                test_passed = False
-                break
-    # Third check: for all i,j; i < j such that sim_mat[i][j] > 0
-    # the amount shared in the result profile from i to j is > 0
-    if test_passed:
-        # Checking with i == 0 and starting at n-2
-        # sim_mat[0][n-1] should be 0 as stated above
-        for j in range(n-1,1,-1):
-            if sim_mat[0][j][0] > 0:
-                # value 0 and j share something - test that the result
-                # profile of comparing all the profiles in the categories from
-                # 0 to j share something
-                # profs = profiles[sorted_values[0]]
-                # for i in range()
-                # prof, shared, std, ci = bootstrap_profiles(profs)
-                # if latest_j_tested < j:
-                #     latest_j_tested
-                raise ValueError, "This test is broken... fix it!!!"
     # Write the test result
     output_fp = join(output_dir, 'gradient_model_test.txt')
     outf = open(output_fp, 'w')
@@ -51,7 +67,8 @@ def gradient_model_test(profiles, sim_mat, category, sorted_values, output_dir):
     outf.write("\tCategory used: %s\n" % category)
     outf.write("\tOrder used: %s\n" % ','.join(sorted_values))
     outf.write("\tGradient model test passed: ")
-    if test_passed:
+    if gradient_model_checks(profiles, sim_mat, sorted_values, 
+                                len(sorted_values)):
         outf.write("Yes\n")
     else:
         outf.write("No\n")
