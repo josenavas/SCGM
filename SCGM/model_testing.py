@@ -62,7 +62,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
                     # get the studies by SampleID
                     ret = make_profiles_by_category(mapping_fp, "SampleID")
                     # Get a list of profiles
-                    profile_list = [ret[k] for k in ret]
+                    profile_list = [ret[k][0] for k in ret]
                     # Add the list of profiles of this mapping file to the 
                     # previous profiles
                     if 'healthy' in profiles:

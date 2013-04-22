@@ -92,18 +92,25 @@ def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
     mapping_data, comments = parse_mapping_file_to_dict(map_f)
     map_f.close()
     # Get a list of unique keys for the specified category
-    values = set([mapping_data[sid][category] for sid in mapping_data])
-    result = {}
-    # Loop over each value in that category
-    for value in values:
-        # Re-open the mapping file
-        map_f = open(mapping_fp, 'U')
-        # Get sample ids that match the value
-        sids = sample_ids_from_metadata_description(map_f, category+":"+value)
-        map_f.close()
-        # Create the list with all the profiles of the sample IDs in this
-        # category value
-        result[value] = [make_profile_by_sid(mapping_data,sid) for sid in sids]
+    if category == 'SampleID':
+        result = {}
+        for sid in mapping_data:
+            result[sid] = [make_profile_by_sid(mapping_data, sid)]
+    else:
+        values = set([mapping_data[sid][category] for sid in mapping_data])
+        result = {}
+        # Loop over each value in that category
+        for value in values:
+            # Re-open the mapping file
+            map_f = open(mapping_fp, 'U')
+            # Get sample ids that match the value
+            sids = sample_ids_from_metadata_description(map_f,
+                                                        category+":"+value)
+            map_f.close()
+            # Create the list with all the profiles of the sample IDs in this
+            # category value
+            result[value] = [make_profile_by_sid(mapping_data,
+                                                        sid) for sid in sids]
     return result
 
 def write_profile(profile, output_fp, bootstrapped=False):
