@@ -2,7 +2,7 @@
 
 __author__ = "Jose Antonio Navas Molina"
 __copyright__ = "Copyright 2013, SCGM course project"
-__credits__ = ["Jose Antonio Navas Molina", "Joshua Shorenstein"]
+__credits__ = ["Jose Antonio Navas Molina"]
 __license__ = "GPL"
 __version__ = "0.0.1-dev"
 __maintainer__ = "Jose Antonio Navas Molina"
@@ -34,7 +34,7 @@ def unify_dictionaries(d1, d2):
     """
     for k in d2:
         if k in d1:
-            d1[k].extend(d2[k])
+            d1[k].append(d2[k])
         else:
             d1[k] = d2[k]
     return d1
@@ -48,12 +48,7 @@ def sort_dictionary_keys(d, descendant=False):
     Returns a list with sorted keys
     """
     try:
-        keys = []
-        for k in d:
-            if k == "None":
-                continue
-            keys.append(k)
-        #keys = [float(k) for k in d]
+        keys = [float(k) for k in d]
     except:
         raise ValueError, "Automatic values order it's only supported " + \
                                 "for numerical categories"

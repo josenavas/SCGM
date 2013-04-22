@@ -12,7 +12,7 @@ __status__ = "Development"
 from numpy import array, mean, std, zeros, dtype
 from numpy.random import randint
 from qiime.stats import quantile
-from SCGM.profile import compare_profiles
+from SCGM.profile import normalize_profiles, compare_profiles
 
 def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
     randfunc=randint):
@@ -31,6 +31,7 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
         ci: the confidence interval for the bootstrap mean
     """
     length = len(profiles)
+    normalize_profiles(profiles)
     boot_shared = []
     boot_profiles = []
     for i in range(repetitions):
