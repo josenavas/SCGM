@@ -12,114 +12,15 @@ __status__ = "Development"
 VALID_MODELS = ['core', 'gradient', 'subpopulation']
 
 from os.path import join
-from qiime.parse import parse_mapping_file_to_dict
-
 from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, unify_dictionaries, \
                         sort_dictionary_keys, write_similarity_matrix, \
                         write_unused_mapping_files
-from SCGM.profile import make_profile_by_sid, make_profiles_by_category, \
-                            normalize_profiles, write_profile
-from SCGM.stats import bootstrap_profiles, build_similarity_matrix, \
-                        is_diagonal_matrix
-
-def core_model_test(base_dir, mapping_table, output_dir):
-    """ Tests the core model
-    Inputs:
-        base_dir: base common directory of all mapping files
-        mapping_table: dictionary with the mapping table information
-        output_dir: output directory
-    """
-    profiles = []
-    # Loop through all the mapping files
-    for map_file in mapping_table:
-        # Get the path to the mapping file
-        map_fp = join(base_dir, map_file)
-        # Parse the mapping file in a dictionary
-        map_f = open(map_fp, 'U')
-        mapping_data, comments = parse_mapping_file_to_dict(map_f)
-        map_f.close()
-        # Create a profile for each sample in this mapping file
-        for sid in mapping_data:
-            profiles.append(make_profile_by_sid(mapping_data, sid))
-    # Bootstrap profiles to get the results
-    profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
-    # Write the bootstrapped profile
-    profile_fp = join(output_dir, 'core_model_profile.txt')
-    write_profile(profile, profile_fp, bootstrapped=True)
-    # Write the test result
-    output_fp = join(output_dir, 'core_model_result.txt')
-    outf = open(output_fp, 'w')
-    outf.write("Results for the core model test:\n")
-    outf.write("Microbiome model: ")
-    if profile['not_shared'][0] < 0.5:
-        outf.write("Substantial core.\n")
-    elif profile['not_shared'][0] < 1.0:
-        outf.write("Minimal core.\n")
-    else:
-        outf.write('No core\n')
-    outf.write("\nStatistical results (amount shared):\n")
-    outf.write("Mean: %f %%\n" % (mean * 100))
-    outf.write("Standard deviation: %f %%\n" % (stdev * 100))
-    outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
-                 % ((ci[0] * 100), (ci[1] * 100)))
-
-def gradient_model_test(profiles, sim_mat, category, sorted_values, output_dir):
-    """ Tests the gradient model in the similarity matrix
-    Inputs:
-        sim_mat: profiles similarity matrix - sorted by sorted_values
-        category: category used for generate the similarity matrix
-        sorted_values: list of category values sorted
-        output_dir: output director
-    """
-    n = len(sorted_values)
-    # First check: sim_mat[0][n-1] == 0
-    test_passed = True if sim_mat[0][n-1] == 0 else False
-    # Second check: for all i in [0..n-2] sim_mat[i][i+1] > 0
-    if test_passed:
-        for i in range(n-1):
-            if sim_mat[i][i+1] > 0:
-                test_passed = False
-                break
-    # Third check: for all i,j; i < j such that sim_mat[i][j] > 0
-    # the amount shared in the result profile from i to j is > 0
-    if test_passed:
-        # Checking with i == 0 and starting at n-2
-        # sim_mat[0][n-1] should be 0 as stated above
-        
-    # Write the test result
-    output_fp = join(output_dir, 'gradient_model_test.txt')
-    outf = open(output_fp, 'w')
-    outf.write("Gradient model results:\n")
-    outf.write("\tCategory used: %s\n" % category)
-    outf.write("\tOrder used: %s\n" % ','.join(sorted_values))
-    outf.write("\tGradient model test passed: ")
-    if test_passed:
-        outf.write("Yes\n")
-    else:
-        outf.write("No\n")
-    outf.close()
-
-def subpopulation_model_test(dist_mat, category, output_dir):
-    """ Tests the subpopulation model in the profiles distance matrix
-    Inputs:
-        dist_mat: profiles distance matrix
-        category: category used for generate the distance matrix
-        output_dir: output directory
-    """
-    # Write the test result
-    output_fp = join(output_dir, 'subpopulation_model_test.txt')
-    outf = open(output_fp, 'w')
-    outf.write("Subpopulation model results:\n")
-    outf.write("\tCategory used: %s\n" % category)
-    outf.write("\tSubpopulation model test passed: ")
-    # The subpopulation model is followed if the similarity matrix is
-    # a diagonal matrix
-    if is_diagonal_matrix(dist_mat):
-        outf.write("Yes\n")
-    else:
-        outf.write("No\n")
-    outf.close()
+from SCGM.profile import make_profiles_by_category
+from SCGM.stats import build_similarity_matrix
+from SCGM.core_model_test import core_model_test
+from SCGM.subpopulation_model_test import subpopulation_model_test
+from SCGM.gradient_model_test import gradient_model_test
 
 def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     """ Tests the microbiome models listed in 'models'
