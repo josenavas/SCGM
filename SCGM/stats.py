@@ -9,7 +9,7 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from numpy import array, mean, std
+from numpy import array, mean, std, zeros, dtype
 from numpy.random import randint
 from qiime.stats import quantile
 from SCGM.profile import compare_profiles
@@ -30,7 +30,6 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
         sample_stdev: the bootstrap standard deviation of the amount shared
         ci: the confidence interval for the bootstrap mean
     """
-
     length = len(profiles)
     boot_shared = []
     boot_profiles = []
@@ -65,3 +64,53 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
         boot_profile[key] = (tax_mean, tax_stdev, tax_ci[0], tax_ci[1])
 
     return boot_profile, sample_mean, sample_stdev, ci
+
+def build_similarity_matrix(profiles, key_order):
+    """Builds the similarity matrix between the profiles, using the given order
+    Inputs:
+        profiles: dictionary of profiles lists, keyed by category values
+        key_order: a list of the dictionary keys ordered
+    Returns:
+        sim_mat: the result similarity matrix, where rows and columns are
+            ordered by 'key_order'
+    """
+    # Get the matrix dimensions (size x size)
+    size = len(key_order)
+    sim_mat = zeros([size, size], dtype='4float64')
+    # Populate the matrix
+    for i in range(size):
+        # The similarity between the profile of a value with itself is the
+        # the amount shared between the profiles in that category values
+        profs = profiles[key_order[i]]
+        if len(profs) == 1:
+            sim_mat[i, i] = (1.0, 0.0, 1.0, 1.0)
+        else:
+            val_prof, val_shared, val_stdev, val_ci = bootstrap_profiles(profs)
+            sim_mat[i, i] = (val_shared, val_stdev, val_ci[0], val_ci[1])
+        for j in range(i+1, size):
+            # Get a list with the profiles of the two category values
+            profs = profiles[key_order[i]]
+            profs.extend(profiles[key_order[j]])
+            # Perform the comparison
+            comp_prof, comp_shared, comp_stdev, comp_ci = \
+                bootstrap_profiles(profs)
+            # Save the shared results on the similarity matrix
+            sim_mat[i,j] = sim_mat[j,i] = (comp_shared, comp_stdev,
+                                                comp_ci[0], comp_ci[1])
+    return sim_mat
+
+def is_diagonal_matrix(matrix):
+    """Returns true if the matrix is diagonal (zeros everywhere except diagonal)
+    Inputs:
+        matrix: the similarity matrix to test
+    """
+    size = len(matrix)
+    for i in range(size):
+         # First check: all the values in the diagonal are different from zero
+        if matrix[i, i][0] == 0:
+            return False
+        # Second check: all the values except the diagonal are different from zero
+        for j in range(i+1, size):
+            if matrix[i ,j][0] != 0:
+                return False
+    return True

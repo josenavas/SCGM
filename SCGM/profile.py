@@ -60,57 +60,48 @@ def compare_profiles(profiles, normalize=False):
     result['not_shared'] = 1.0 - share
     return result
 
-def make_profile(map_data, sids):
-    """ Create a comparison profile for the sample IDs passed 
-
+def make_profile_by_sid(map_data, sid):
+    """ Create a profile for the sample ID passed 
+    Inputs
         map_data: mapping file data from parse_mapping_file_to_dict()
-        sids: list of sample IDs to compare
+        sid: the sample ID
     """
-    profiles = []
-    #create a profile dictionary for each sample ID passed
-    for sid in sids:
-        profile = {}
-        #loop over the keys in the mapping file
-        for key in map_data[sid]:
-            #all keys with taxa data start with k_
-            if key.startswith('k_'):
-                profile[key] = float(map_data[sid][key])
-        #append the profile to the profiles list
-        profiles.append(profile)
+    profile = {}
+    #loop over the keys in the mapping file
+    for key in map_data[sid]:
+        #all keys with taxa data start with k_
+        if key.startswith('k_'):
+            profile[key] = float(map_data[sid][key])
+    # Add the 'not_shared' key in order to normalize this profile
+    profile['not_shared'] = 0.0
+    return profile
 
-    #if we have only one profile, add not_shared and return it
-    if len(profiles) == 1:
-        profiles[0]['not_shared'] = 0.0
-        return profiles[0]
-    #return the single comparison profile for all sample IDs passed
-    return compare_profiles(normalize_profiles(profiles))
-
-def make_profile_from_mapping(mapping_fp, category="HOST_SUBJECT_ID"):
-    """ Create a list of comparison profiles for each unique value in category
-
-        mapping_fp: filepath to the mapping file of interest
+def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
+    """ Creates a list of profiles for each unique value in the category
+    Inputs:
+        mapping_fp: filepath to the mapping file
         category: mapping file category to split data over
                   defaults to HOST_SUBJECT_ID
+    Returns a dictionary keyed by the values on that category and a list of 
+        profiles as values
     """
-    #parse the mapping file
+    # Parse the mapping file
     map_f = open(mapping_fp, 'U')
     mapping_data, comments = parse_mapping_file_to_dict(map_f)
     map_f.close()
-
-    #get a list of unique keys for the specifified category
+    # Get a list of unique keys for the specified category
     values = set([mapping_data[sid][category] for sid in mapping_data])
-
     result = {}
-    #loop over each key found
+    # Loop over each value in that category
     for value in values:
+        # Re-open the mapping file
         map_f = open(mapping_fp, 'U')
-        #get sample ids that match the value
+        # Get sample ids that match the value
         sids = sample_ids_from_metadata_description(map_f, category+":"+value)
         map_f.close()
-
-        #create the comarison profile for the sample IDs and add to result list
-        result[value] = make_profile(mapping_data, sids)
-
+        # Create the list with all the profiles of the sample IDs in this
+        # category value
+        result[value] = [make_profile_by_sid(mapping_data,sid) for sid in sids]
     return result
 
 def write_profile(profile, output_fp, bootstrapped=False):

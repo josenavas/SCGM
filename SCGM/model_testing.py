@@ -15,10 +15,13 @@ from os.path import join
 from qiime.parse import parse_mapping_file_to_dict
 
 from SCGM.parse import parse_mapping_table
-from SCGM.util import check_exist_filepaths, sort_category_values
-from SCGM.profile import make_profile, compare_profiles, normalize_profiles, \
-                            write_profile
-from SCGM.stats import bootstrap_profiles
+from SCGM.util import check_exist_filepaths, unify_dictionaries, \
+                        sort_dictionary_keys, write_similarity_matrix, \
+                        write_unused_mapping_files
+from SCGM.profile import make_profile_by_sid, make_profiles_by_category, \
+                            normalize_profiles, write_profile
+from SCGM.stats import bootstrap_profiles, build_similarity_matrix, \
+                        is_diagonal_matrix
 
 def core_model_test(base_dir, mapping_table, output_dir):
     """ Tests the core model
@@ -38,7 +41,7 @@ def core_model_test(base_dir, mapping_table, output_dir):
         map_f.close()
         # Create a profile for each sample in this mapping file
         for sid in mapping_data:
-            profiles.append(make_profile(mapping_data, [sid]))
+            profiles.append(make_profile_by_sid(mapping_data, sid))
     # Bootstrap profiles to get the results
     profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
     # Write the bootstrapped profile
@@ -61,20 +64,35 @@ def core_model_test(base_dir, mapping_table, output_dir):
     outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
                  % ((ci[0] * 100), (ci[1] * 100)))
 
-def gradient_model_test(dist_mat, category, sorted_values, output_dir):
-    """ Tests the gradient model in the distance matrix
+def gradient_model_test(profiles, sim_mat, category, sorted_values, output_dir):
+    """ Tests the gradient model in the similarity matrix
     Inputs:
-        dist_mat: profiles distance matrix - sorted by sorted_values
-        category: category used for generate the distance matrix
+        sim_mat: profiles similarity matrix - sorted by sorted_values
+        category: category used for generate the similarity matrix
         sorted_values: list of category values sorted
         output_dir: output director
     """
+    n = len(sorted_values)
+    # First check: sim_mat[0][n-1] == 0
+    test_passed = True if sim_mat[0][n-1] == 0 else False
+    # Second check: for all i in [0..n-2] sim_mat[i][i+1] > 0
+    if test_passed:
+        for i in range(n-1):
+            if sim_mat[i][i+1] > 0:
+                test_passed = False
+                break
+    # Third check: for all i,j; i < j such that sim_mat[i][j] > 0
+    # the amount shared in the result profile from i to j is > 0
+    if test_passed:
+        # Checking with i == 0 and starting at n-2
+        # sim_mat[0][n-1] should be 0 as stated above
+        
     # Write the test result
     output_fp = join(output_dir, 'gradient_model_test.txt')
     outf = open(output_fp, 'w')
     outf.write("Gradient model results:\n")
-    outf.write("\tCategory used: %d\n" % category)
-    outf.write("\tOrder used: %d\n" % ','.join(sorted_values))
+    outf.write("\tCategory used: %s\n" % category)
+    outf.write("\tOrder used: %s\n" % ','.join(sorted_values))
     outf.write("\tGradient model test passed: ")
     if test_passed:
         outf.write("Yes\n")
@@ -95,45 +113,13 @@ def subpopulation_model_test(dist_mat, category, output_dir):
     outf.write("Subpopulation model results:\n")
     outf.write("\tCategory used: %s\n" % category)
     outf.write("\tSubpopulation model test passed: ")
-    # The subpopulation model is followed if the distance matrix is
-    # the identity matrix
-    if is_identity_matrix(dist_mat):
+    # The subpopulation model is followed if the similarity matrix is
+    # a diagonal matrix
+    if is_diagonal_matrix(dist_mat):
         outf.write("Yes\n")
     else:
         outf.write("No\n")
     outf.close()
-
-# def subpopulation_model_test(base_dir, mapping_table, category, output_dir):
-#     """ Tests the subpopulation model based on the provided category
-#     Inputs:
-#         base_dir: base common directory for all mapping files
-#         mapping_table: dictionary with the mapping table information
-#         category: category to use for the test
-#         output_dir: output directory
-#     """
-#     profiles = {}
-#     # Loop through all the mapping files
-#     for map_file in mapping_table:
-#         # Get the path to the mapping file
-#         map_fp = join(base_dir, map_file)
-#         # Get the profiles by category value
-#         ret = make_profiles_from_mapping(map_fp,
-#                                         mapping_table[map_file][category])
-#         # Add the profiles in this mapping file to previous profiles
-#         for value in ret:
-#             if value not in profiles:
-#                 profiles[value] = ret[value]
-#             else:
-#                 profiles[value].extend(ret[value])
-#     # Generate a bootstrapped profile for each value in the category
-#     boot_profiles = {}
-#     for value in profiles:
-#         profile, mean, stdev, ci = bootstrap_profiles(profiles[value])
-#         boot_profiles[value] = (profile, mean, stdev, ci[0], ci[1])
-#     # Build distance matrix from boot profiles
-#     dist_mat = build_distance_matrix(boot_profiles)
-#     # If the distance matrix is 
-#     raise ValueError, "Function not implemented"
 
 def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     """ Tests the microbiome models listed in 'models'
@@ -159,32 +145,61 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     if 'gradient' in models or 'subpopulation' in models:
         # For the gradient and subpopulation models we need to get the 
         # profiles by category value
-        profiles = get_profiles_by_category(base_dir, mapping_table, category)
-        # Generate a bootstrapped profile for each value in the category
-        boot_profiles = {}
-        for value in profiles:
-            profile, mean, stdev, ci = bootstrap_profiles(profiles[value])
-            boot_profiles[value] = (profile, mean, stdev, ci)
-
-        values = boot_profiles.keys()
+        profiles = {}
+        # Keep track of the mapping files not used in the test
+        unused_maps = []
+        for mapping_file in mapping_table_dict:
+            mapping_fp = join(base_dir, mapping_file)
+            mapping_category = mapping_table_dict[mapping_file][category]
+            if mapping_category == "No":
+                # The mapping file do not have data for this category
+                unused_maps.append(mapping_file)
+            elif mapping_category == "Yes":
+                # 'Yes' its only supported for the category "HEALTHY"
+                if category == "HEALTHY":
+                    # All the study has been done in healthy people
+                    # get the studies by SampleID
+                    ret = make_profiles_by_category(mapping_fp, "SampleID")
+                    # Get a list of profiles
+                    profile_list = [ret[k] for k in ret]
+                    # Add the list of profiles of this mapping file to the 
+                    # previous profiles
+                    if 'healthy' in profiles:
+                        profiles['healthy'].extend(profile_list)
+                    else:
+                        profiles['healthy'] = profile_list
+                else:
+                    raise ValueError, "The value 'Yes' in the mapping table" + \
+                        " it's only supported for the category 'HEALTHY'"
+            else:
+                # Generate the profiles by category of this mapping file
+                map_profiles = make_profiles_by_category(mapping_fp, 
+                                mapping_category)
+                # Add the profiles of this mapping file to the previous profiles
+                profiles = unify_dictionaries(profiles, map_profiles)
+        # Get the different values of the category in case that we need to
+        # sort them (for the gradient model)
+        values = profiles.keys()
         if 'gradient' in models:
             # If we have to test the gradient model, we have to use the values
             # in that category sorted
-            if sort  == 'ascendant':
-                # We have to sort the values in an ascendant manner
-                values = sorted(values)
-            elif sort == 'descendant':
-                # We have to sort the values in a descendant manner
-                values = sorted(values)[::-1]
+            if sort in ['ascendant', 'descendant']:
+                values = sort_dictionary_keys(profiles,
+                                    descendant=(sort=='descendant'))
             else:
                 # We use the user defined sort of the values
                 values = sort
-        # Build distance matrix from bootstrapped profiles
-        dist_mat = build_distance_matrix(boot_profiles, values)
-
+        # Build similarity matrix from bootstrapped profiles
+        sim_mat = build_similarity_matrix(profiles, values)
+        # Store the similarity matrix in a file
+        sim_mat_fp = join(output_dir, 'similarity_matrix.txt')
+        write_similarity_matrix(sim_mat, values, sim_mat_fp)
+        # Store in a file the mapping files not used for the similarity matrix
+        unused_maps_fp = join(output_dir, 'unused_mapping_files.txt')
+        write_unused_mapping_files(unused_maps, unused_maps_fp)
         if 'subpopulation' in models:
             # Perform subpopulation model test
-            subpopulation_model_test(dist_mat, category, output_dir)
+            subpopulation_model_test(sim_mat, category, output_dir)
         if 'gradient' in models:
             # Perform gradient model test
-            gradient_model_test(dist_mat, category, values, output_dir)
+            gradient_model_test(profiles, sim_mat, category, values, output_dir)

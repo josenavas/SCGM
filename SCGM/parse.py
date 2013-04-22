@@ -54,3 +54,15 @@ def parse_mapping_table(lines):
 				data[mapping_path] = map_values
 
 	return headers, data
+
+def unify_dictionaries(dict1, dict2):
+    """ Inserts the values of the dict2 into dict1
+    Inputs:
+        dict1, dict2: dictionaries with lists as values
+    """
+    for key in dict2:
+        if key not in dict1:
+            dict1[key] = dict2[key]
+        else:
+            dict1[key].append(dict2[key])
+    return dict1
