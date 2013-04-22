@@ -22,11 +22,13 @@ def normalize_profiles(profiles):
         raise ValueError, "An empty profiles list cannot be normalized"
     if len(profiles) == 1:
         raise ValueError, "More than one profile is needed to normalize"
+
     #Make a set of taxa keys for each profiles
     taxa = set([key for prof in profiles for key in prof.keys()])
     if 'not_shared' not in taxa:
         #Add the 'not_shared' in the taxa
         taxa.add('not_shared')
+
     for key in taxa:
         for profile in profiles:
             if key not in profile:
@@ -102,6 +104,8 @@ def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
         # Create the list with all the profiles of the sample IDs in this
         # category value
         result[value] = [make_profile_by_sid(mapping_data,sid) for sid in sids]
+        if len(result[value]) > 1:
+            result[value] = normalize_profiles(result[value])
     return result
 
 def write_profile(profile, output_fp, bootstrapped=False):

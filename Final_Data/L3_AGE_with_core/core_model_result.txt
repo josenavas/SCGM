@@ -1,0 +1,7 @@
+Results for the core model test:
+Microbiome model: Minimal core.
+
+Statistical results (amount shared):
+Mean: 0.001214 %
+Standard deviation: 0.027202 %
+Confidence interval for the mean: [0.000000 %, 0.000000 %]

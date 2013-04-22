@@ -12,6 +12,7 @@ __status__ = "Development"
 from qiime.util import parse_command_line_parameters, make_option
 from SCGM.model_testing import microbiome_model_test, VALID_MODELS
 from os import mkdir
+from os.path import exists
 
 script_info = {}
 script_info['brief_description'] = """Tests the microbiome models presented in\
@@ -118,11 +119,8 @@ if __name__ == '__main__':
     sort = opts.sort
 
     # Try to create the output folder
-    try:
+    if not exists(output_dir):
         mkdir(output_dir)
-    except:
-        # It exists, don't do anything
-        pass
 
     # Open the mapping table file
     map_table = open(map_table_fp, 'U')

@@ -1,0 +1,146 @@
+k__Archaea;p__Crenarchaeota	0.0	0.0	0.0	0.0
+k__Archaea;p__Crenarchaeota;c__Thaumarchaeota	0.0	0.0	0.0	0.0
+k__Archaea;p__Euryarchaeota	0.0	0.0	0.0	0.0
+k__Archaea;p__Euryarchaeota;c__Methanobacteria	0.0	0.0	0.0	0.0
+k__Archaea;p__Euryarchaeota;c__Methanomicrobia	0.0	0.0	0.0	0.0
+k__Archaea;p__Euryarchaeota;c__Thermoplasmata	0.0	0.0	0.0	0.0
+k__Bacteria;p__	0.0	0.0	0.0	0.0
+k__Bacteria;p__;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__AD3	0.0	0.0	0.0	0.0
+k__Bacteria;p__AD3;c__ABS-6	0.0	0.0	0.0	0.0
+k__Bacteria;p__AD3;c__JG37-AG-4	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Acidobacteria (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Acidobacteria-5	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Chloracidobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Holophagae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__MVS-40	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__PAUC37f	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__RB25	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Solibacteres	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__Sva0725	0.0	0.0	0.0	0.0
+k__Bacteria;p__Acidobacteria;c__iii1-8	0.0	0.0	0.0	0.0
+k__Bacteria;p__Actinobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Actinobacteria;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Actinobacteria;c__Actinobacteria (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Aquificae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Aquificae;c__Aquificae (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__BRC1	0.0	0.0	0.0	0.0
+k__Bacteria;p__BRC1;c__PRR-11	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidetes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidetes;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidetes;c__Bacteroidia	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidetes;c__Flavobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidetes;c__Sphingobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__CCM11b	0.0	0.0	0.0	0.0
+k__Bacteria;p__CCM11b;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Caldithrix_KSB1	0.0	0.0	0.0	0.0
+k__Bacteria;p__Caldithrix_KSB1;c__Caldithrixae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlamydiae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlamydiae;c__Chlamydiae (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlorobi	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlorobi;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlorobi;c__OPB56	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlorobi;c__SJA-28	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chlorobi;c__ZB1	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__Anaerolineae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__Bljii12	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__Chloroflexi (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__Ktedonobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__SOGA31	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__TK17	0.0	0.0	0.0	0.0
+k__Bacteria;p__Chloroflexi;c__Thermomicrobia	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria;c__S15B-MN24	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria;c__SM1D11	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria;c__YS2	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteria;c__mle1-12	0.0	0.0	0.0	0.0
+k__Bacteria;p__Deferribacteres	0.0	0.0	0.0	0.0
+k__Bacteria;p__Deferribacteres;c__Deferribacteres (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Elusimicrobia	0.0	0.0	0.0	0.0
+k__Bacteria;p__Elusimicrobia;c__Elusimicrobia (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fibrobacteres	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fibrobacteres;c__Fibrobacteres (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fibrobacteres;c__Fibrobacteres-2	0.0	0.0	0.0	0.0
+k__Bacteria;p__Firmicutes	1.21412413634e-05	0.0	0.0	0.0
+k__Bacteria;p__Firmicutes;c__Bacilli	0.0	0.0	0.0	0.0
+k__Bacteria;p__Firmicutes;c__Clostridia	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fusobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fusobacteria;c__Fusobacteria (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Gemmatimonadetes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Gemmatimonadetes;c__Gemmatimonadetes (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Lentisphaerae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Lentisphaerae;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Lentisphaerae;c__Lentisphaerae (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__MVP-15	0.0	0.0	0.0	0.0
+k__Bacteria;p__MVP-15;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__NC10	0.0	0.0	0.0	0.0
+k__Bacteria;p__NC10;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Nitrospirae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Nitrospirae;c__Nitrospira (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__OP10	0.0	0.0	0.0	0.0
+k__Bacteria;p__OP10;c__CH21	0.0	0.0	0.0	0.0
+k__Bacteria;p__OP10;c__CL500-48	0.0	0.0	0.0	0.0
+k__Bacteria;p__OP10;c__S1a-1H	0.0	0.0	0.0	0.0
+k__Bacteria;p__Planctomycetes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Planctomycetes;c__Phycisphaerae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Planctomycetes;c__Planctomycea	0.0	0.0	0.0	0.0
+k__Bacteria;p__Planctomycetes;c__agg27	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria;c__Alphaproteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria;c__Betaproteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria;c__Deltaproteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria;c__Epsilonproteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Proteobacteria;c__Gammaproteobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__SC3	0.0	0.0	0.0	0.0
+k__Bacteria;p__SC3;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__SC4	0.0	0.0	0.0	0.0
+k__Bacteria;p__SC4;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__SPAM	0.0	0.0	0.0	0.0
+k__Bacteria;p__SPAM;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__SR1	0.0	0.0	0.0	0.0
+k__Bacteria;p__SR1;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes;c__Brachyspirae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes;c__Leptospirae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes;c__M1NP2-04	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes;c__SP_WWE1	0.0	0.0	0.0	0.0
+k__Bacteria;p__Spirochaetes;c__Spirochaetes (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Synergistetes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Synergistetes;c__Synergistia	0.0	0.0	0.0	0.0
+k__Bacteria;p__TG3	0.0	0.0	0.0	0.0
+k__Bacteria;p__TG3;c__TG3-1	0.0	0.0	0.0	0.0
+k__Bacteria;p__TG3;c__TG3-2	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM6	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM6;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM7	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM7;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM7;c__TM7-1	0.0	0.0	0.0	0.0
+k__Bacteria;p__TM7;c__TM7-3	0.0	0.0	0.0	0.0
+k__Bacteria;p__Tenericutes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Tenericutes;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Tenericutes;c__Erysipelotrichi	0.0	0.0	0.0	0.0
+k__Bacteria;p__Tenericutes;c__ML615J-28	0.0	0.0	0.0	0.0
+k__Bacteria;p__Tenericutes;c__Mollicutes	0.0	0.0	0.0	0.0
+k__Bacteria;p__Thermi	0.0	0.0	0.0	0.0
+k__Bacteria;p__Thermi;c__Deinococci	0.0	0.0	0.0	0.0
+k__Bacteria;p__Thermotogae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Thermotogae;c__Thermotogae (class)	0.0	0.0	0.0	0.0
+k__Bacteria;p__Verrucomicrobia	0.0	0.0	0.0	0.0
+k__Bacteria;p__Verrucomicrobia;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__Verrucomicrobia;c__Opitutae	0.0	0.0	0.0	0.0
+k__Bacteria;p__Verrucomicrobia;c__Spartobacteria	0.0	0.0	0.0	0.0
+k__Bacteria;p__Verrucomicrobia;c__Verrucomicrobiae	0.0	0.0	0.0	0.0
+k__Bacteria;p__WPS-2	0.0	0.0	0.0	0.0
+k__Bacteria;p__WPS-2;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__WS3	0.0	0.0	0.0	0.0
+k__Bacteria;p__WS3;c__PRR-12	0.0	0.0	0.0	0.0
+k__Bacteria;p__ZB2	0.0	0.0	0.0	0.0
+k__Bacteria;p__ZB2;c__	0.0	0.0	0.0	0.0
+k__Bacteria;p__ZB3	0.0	0.0	0.0	0.0
+k__Bacteria;p__ZB3;c__Rs-J96	0.0	0.0	0.0	0.0
+not_shared	0.999987858759	0.0	1.0	1.0
