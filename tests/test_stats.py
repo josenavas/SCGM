@@ -9,5 +9,9 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
+class StatsTest(TestCase):
+    def setUp(self):
+        raise ValueError, ""
+
 if __name__ == '__main__':
     main()

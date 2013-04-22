@@ -9,5 +9,11 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
+from SCGM.model_testing import model_testing
+
+class ModelTestingTest(TestCase):
+    def setUp(self):
+        raise ValueError, "Test not implemented!!"
+
 if __name__ == '__main__':
     main()

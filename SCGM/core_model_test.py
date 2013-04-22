@@ -14,13 +14,8 @@ from qiime.parse import parse_mapping_file_to_dict
 from SCGM.profile import make_profile_by_sid, normalize_profiles, write_profile
 from SCGM.stats import bootstrap_profiles
 
-def core_model_test(base_dir, mapping_table, output_dir):
-    """ Tests the core model
-    Inputs:
-        base_dir: base common directory of all mapping files
-        mapping_table: dictionary with the mapping table information
-        output_dir: output directory
-    """
+def get_profiles_list(base_dir, mapping_table):
+    """"""
     profiles = []
     # Loop through all the mapping files
     for map_file in mapping_table:
@@ -33,6 +28,16 @@ def core_model_test(base_dir, mapping_table, output_dir):
         # Create a profile for each sample in this mapping file
         for sid in mapping_data:
             profiles.append(make_profile_by_sid(mapping_data, sid))
+    return profiles
+
+def core_model_test(base_dir, mapping_table, output_dir):
+    """ Tests the core model
+    Inputs:
+        base_dir: base common directory of all mapping files
+        mapping_table: dictionary with the mapping table information
+        output_dir: output directory
+    """
+    profiles = get_profiles_list(base_dir, mapping_table)
     # Bootstrap profiles to get the results
     profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
     # Write the bootstrapped profile

@@ -9,5 +9,11 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
+from SCGM.subpopulation_model_test import subpopulation_model_test
+
+class SubpopulationModelTestTest(TestCase):
+    def setUp(self):
+        raise ValueError, "Test not implemented!!!"
+
 if __name__ == '__main__':
     main()
