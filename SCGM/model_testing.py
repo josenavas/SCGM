@@ -16,7 +16,7 @@ from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, unify_dictionaries, \
                         sort_dictionary_keys, write_similarity_matrix, \
                         write_unused_mapping_files
-from SCGM.profile import normalize_profiles, make_profiles_by_category
+from SCGM.profile import make_profiles_by_category
 from SCGM.stats import build_similarity_matrix
 from SCGM.core_model_test import core_model_test
 from SCGM.subpopulation_model_test import subpopulation_model_test
@@ -90,10 +90,6 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
             else:
                 # We use the user defined sort of the values
                 values = sort
-        #normalize all the profiles for each category
-        for profile in profiles:
-            if len(profiles[profile]) > 1:
-                profiles[profile] = normalize_profiles(profiles[profile])
         # Build similarity matrix from bootstrapped profiles
         sim_mat = build_similarity_matrix(profiles, values)
         # Store the similarity matrix in a file

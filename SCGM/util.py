@@ -48,12 +48,7 @@ def sort_dictionary_keys(d, descendant=False):
     Returns a list with sorted keys
     """
     try:
-        keys = []
-        for k in d:
-            if k == "None":
-                continue
-            keys.append(k)
-        #keys = [float(k) for k in d]
+        keys = [float(k) for k in d]
     except:
         raise ValueError, "Automatic values order it's only supported " + \
                                 "for numerical categories"

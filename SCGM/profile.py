@@ -104,8 +104,6 @@ def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
         # Create the list with all the profiles of the sample IDs in this
         # category value
         result[value] = [make_profile_by_sid(mapping_data,sid) for sid in sids]
-        if len(result[value]) > 1:
-            result[value] = normalize_profiles(result[value])
     return result
 
 def write_profile(profile, output_fp, bootstrapped=False):
