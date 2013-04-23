@@ -72,6 +72,8 @@ script_info['required_options'] = [
             "table are located"),
     make_option('-m', '--mapping_table_fp', type='existing_filepath',
         help="The path to the mapping table file."),
+    make_option('-l', '--level', type='int',
+        help="The taxa level."),
     make_option('-o', '--output_dir', type='new_dirpath',
         help="Path to the output directory.")
 ]
@@ -126,7 +128,7 @@ if __name__ == '__main__':
     map_table = open(map_table_fp, 'U')
 
     # Test the models
-    microbiome_model_test(input_dir, map_table, model, category, sort,
+    microbiome_model_test(input_dir, map_table, model, opts.level, category, sort,
         output_dir)
 
     # Close the mapping table file

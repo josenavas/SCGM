@@ -51,20 +51,9 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
     # using bootstrap percentile interval
     ci = quantile(boot_shared, [alpha/2, 1-(alpha/2)])
     # Compute the bootstrapped profile of the profiles list
-    boot_profile = {}
-    for key in profiles[0]:
-        # Get an array with the data for this taxonomy
-        tax_data = [prof[key] for prof in boot_profiles]
-        # Get the mean
-        tax_mean = mean(tax_data)
-        # Get the standard deviation
-        tax_stdev = std(tax_mean)
-        # Get the confidence intervals
-        tax_ci = quantile(tax_data, [alpha/2, 1-(alpha/2)])
-        # Store the values in the bootstrapped profile
-        boot_profile[key] = (tax_mean, tax_stdev, tax_ci[0], tax_ci[1])
+    profile = compare_profiles(profiles)
 
-    return boot_profile, sample_mean, sample_stdev, ci
+    return profile, 1.0-profile['not_shared'], sample_stdev, ci
 
 def build_similarity_matrix(profiles, key_order):
     """Builds the similarity matrix between the profiles, using the given order
@@ -91,8 +80,10 @@ def build_similarity_matrix(profiles, key_order):
                                 val_ci[1])
         for j in range(i+1, size):
             # Get a list with the profiles of the two category values
-            profs = profiles[key_order[i]]
+            profs = []
+            profs.extend(profiles[key_order[i]])
             profs.extend(profiles[key_order[j]])
+
             # Perform the comparison
             comp_prof, comp_shared, comp_stdev, comp_ci = \
                 bootstrap_profiles(profs)

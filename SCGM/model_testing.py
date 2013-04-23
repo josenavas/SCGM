@@ -22,7 +22,7 @@ from SCGM.core_model_test import core_model_test
 from SCGM.subpopulation_model_test import subpopulation_model_test
 from SCGM.gradient_model_test import gradient_model_test
 
-def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
+def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, output_dir):
     """ Tests the microbiome models listed in 'models'
 
     Inputs:
@@ -42,7 +42,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
     # Test the different models
     if 'core' in models:
         # Perform core model testing
-        core_model_test(base_dir, mapping_table_dict, output_dir)
+        core_model_test(base_dir, mapping_table_dict, taxa_level, output_dir)
     if 'gradient' in models or 'subpopulation' in models:
         # For the gradient and subpopulation models we need to get the 
         # profiles by category value
@@ -60,7 +60,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
                 if category == "HEALTHY":
                     # All the study has been done in healthy people
                     # get the studies by SampleID
-                    ret = make_profiles_by_category(mapping_fp, "SampleID")
+                    ret = make_profiles_by_category(mapping_fp, taxa_level, "SampleID")
                     # Get a list of profiles
                     profile_list = [ret[k][0] for k in ret]
                     # Add the list of profiles of this mapping file to the 
@@ -74,7 +74,7 @@ def microbiome_model_test(base_dir, lines, models, category, sort, output_dir):
                         " it's only supported for the category 'HEALTHY'"
             else:
                 # Generate the profiles by category of this mapping file
-                map_profiles = make_profiles_by_category(mapping_fp, 
+                map_profiles = make_profiles_by_category(mapping_fp, taxa_level, 
                                 mapping_category)
                 # Add the profiles of this mapping file to the previous profiles
                 profiles = unify_dictionaries(profiles, map_profiles)

@@ -14,7 +14,7 @@ from qiime.parse import parse_mapping_file_to_dict
 from SCGM.profile import make_profile_by_sid, normalize_profiles, write_profile
 from SCGM.stats import bootstrap_profiles
 
-def get_profiles_list(base_dir, mapping_table):
+def get_profiles_list(base_dir, mapping_table, taxa_level):
     """"""
     profiles = []
     # Loop through all the mapping files
@@ -27,30 +27,30 @@ def get_profiles_list(base_dir, mapping_table):
         map_f.close()
         # Create a profile for each sample in this mapping file
         for sid in mapping_data:
-            profiles.append(make_profile_by_sid(mapping_data, sid))
+            profiles.append(make_profile_by_sid(mapping_data, sid, taxa_level))
     return profiles
 
-def core_model_test(base_dir, mapping_table, output_dir):
+def core_model_test(base_dir, mapping_table, taxa_level, output_dir):
     """ Tests the core model
     Inputs:
         base_dir: base common directory of all mapping files
         mapping_table: dictionary with the mapping table information
         output_dir: output directory
     """
-    profiles = get_profiles_list(base_dir, mapping_table)
+    profiles = get_profiles_list(base_dir, mapping_table, taxa_level)
     # Bootstrap profiles to get the results
     profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
     # Write the bootstrapped profile
     profile_fp = join(output_dir, 'core_model_profile.txt')
-    write_profile(profile, profile_fp, bootstrapped=True)
+    write_profile(profile, profile_fp)
     # Write the test result
     output_fp = join(output_dir, 'core_model_result.txt')
     outf = open(output_fp, 'w')
     outf.write("Results for the core model test:\n")
     outf.write("Microbiome model: ")
-    if profile['not_shared'][0] < 0.5:
+    if profile['not_shared'] < 0.5:
         outf.write("Substantial core.\n")
-    elif profile['not_shared'][0] < 1.0:
+    elif profile['not_shared'] < 1.0:
         outf.write("Minimal core.\n")
     else:
         outf.write('No core\n')

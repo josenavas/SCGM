@@ -1,3 +1,0 @@
-Subpopulation model results:
-	Category used: HEALTHY
-	Subpopulation model test passed: No

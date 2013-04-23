@@ -62,7 +62,7 @@ def compare_profiles(profiles, normalize=False):
     result['not_shared'] = 1.0 - share
     return result
 
-def make_profile_by_sid(map_data, sid):
+def make_profile_by_sid(map_data, sid, taxa_level):
     """ Create a profile for the sample ID passed 
     Inputs
         map_data: mapping file data from parse_mapping_file_to_dict()
@@ -72,13 +72,13 @@ def make_profile_by_sid(map_data, sid):
     #loop over the keys in the mapping file
     for key in map_data[sid]:
         #all keys with taxa data start with k_
-        if key.startswith('k_'):
+        if key.startswith('k_') and len(key.split(';')) == taxa_level:
             profile[key] = float(map_data[sid][key])
     # Add the 'not_shared' key in order to normalize this profile
     profile['not_shared'] = 0.0
     return profile
 
-def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
+def make_profiles_by_category(mapping_fp, taxa_level, category):
     """ Creates a list of profiles for each unique value in the category
     Inputs:
         mapping_fp: filepath to the mapping file
@@ -95,7 +95,7 @@ def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
     if category == 'SampleID':
         result = {}
         for sid in mapping_data:
-            result[sid] = [make_profile_by_sid(mapping_data, sid)]
+            result[sid] = [make_profile_by_sid(mapping_data, sid, taxa_level)]
     else:
         values = set([mapping_data[sid][category] for sid in mapping_data])
         result = {}
@@ -110,25 +110,19 @@ def make_profiles_by_category(mapping_fp, category="HOST_SUBJECT_ID"):
             # Create the list with all the profiles of the sample IDs in this
             # category value
             result[value] = [make_profile_by_sid(mapping_data,
-                                                        sid) for sid in sids]
+                                                sid, taxa_level) for sid in sids]
     return result
 
-def write_profile(profile, output_fp, bootstrapped=False):
+def write_profile(profile, output_fp):
     """ Writes the profile to the file output_fp
 
     Inputs:
         profile: the profile to be written
         output_fp: the output filepath
-        bootstrapped: indicates if the profile is a bootstrapped profile
     """
     outf = open(output_fp, 'w')
     sorted_keys = sorted(profile.keys())
     for k in sorted_keys:
-        if bootstrapped:
-            mean, stdev, ci0, ci1 = profile[k]
-            outf.write('\t'.join([k, str(mean), str(stdev), str(ci0),
-                         str(ci1)]) + '\n')
-        else:
             value = profile[k]
             outf.write('\t'.join([k, str(value)]) + '\n')
     outf.close()
