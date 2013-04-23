@@ -16,7 +16,7 @@ from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, unify_dictionaries, \
                         sort_dictionary_keys, write_similarity_matrix, \
                         write_unused_mapping_files
-from SCGM.profile import make_profiles_by_category
+from SCGM.profile import make_profiles_by_category, write_profile
 from SCGM.stats import build_similarity_matrix
 from SCGM.core_model_test import core_model_test
 from SCGM.subpopulation_model_test import subpopulation_model_test
@@ -91,10 +91,14 @@ def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, o
                 # We use the user defined sort of the values
                 values = sort
         # Build similarity matrix from bootstrapped profiles
-        sim_mat = build_similarity_matrix(profiles, values)
+        sim_mat, group_profiles = build_similarity_matrix(profiles, values)
         # Store the similarity matrix in a file
         sim_mat_fp = join(output_dir, 'similarity_matrix.txt')
         write_similarity_matrix(sim_mat, values, sim_mat_fp)
+        # Store the profile of each group
+        for i, prof in enumerate(group_profiles):
+            prof_fp = join(output_dir, str(values[i] + '_profile.txt'))
+            write_profile(prof, prof_fp)
         # Store in a file the mapping files not used for the similarity matrix
         unused_maps_fp = join(output_dir, 'unused_mapping_files.txt')
         write_unused_mapping_files(unused_maps, unused_maps_fp)

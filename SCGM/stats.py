@@ -67,6 +67,8 @@ def build_similarity_matrix(profiles, key_order):
     # Get the matrix dimensions (size x size)
     size = len(key_order)
     sim_mat = zeros([size, size], dtype='4float64')
+    # Initialize the group profiles list
+    group_profiles = []
     # Populate the matrix
     for i in range(size):
         # The similarity between the profile of a value with itself is the
@@ -74,10 +76,11 @@ def build_similarity_matrix(profiles, key_order):
         profs = profiles[key_order[i]]
         if len(profs) == 1:
             sim_mat[i, i] = (1.0, 0.0, 1.0, 1.0)
+            group_profiles.append(profs[0])
         else:
             val_prof, val_shared, val_stdev, val_ci = bootstrap_profiles(profs)
-            sim_mat[i, i] = (val_shared, val_stdev, val_ci[0],
-                                val_ci[1])
+            sim_mat[i, i] = (val_shared, val_stdev, val_ci[0], val_ci[1])
+            group_profiles.append(val_prof)
         for j in range(i+1, size):
             # Get a list with the profiles of the two category values
             profs = []
@@ -90,7 +93,7 @@ def build_similarity_matrix(profiles, key_order):
             # Save the shared results on the similarity matrix
             sim_mat[i,j] = sim_mat[j,i] = (comp_shared, comp_stdev, comp_ci[0],\
                                             comp_ci[1])
-    return sim_mat
+    return sim_mat, group_profiles
 
 def is_diagonal_matrix(matrix):
     """Returns true if the matrix is diagonal (zeros everywhere except diagonal)
