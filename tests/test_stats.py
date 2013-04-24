@@ -26,12 +26,9 @@ class StatsTest(TestCase):
         obs_prof, obs_mean, obs_stdev, obs_ci = \
                     bootstrap_profiles(self.profiles_list, randfunc = randfunc)
 
-        exp_prof = {
-            'taxa1': (0.10, 0.0, 0.10, 0.10),
-            'taxa2': (0.50, 0.0, 0.50, 0.50),
-            'taxa3': (0.15, 0.15, 0.15, 0.15),
-            'taxa4': (0.25)
-        }
+        exp_prof = {'taxa1': (0.10),'taxa2': (0.22),
+                    'taxa3': (0.15),'taxa4': (0.25)}
+        
 
     def test_build_similarity_matrix(self):
         pass

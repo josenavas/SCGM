@@ -85,10 +85,17 @@ def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, o
             # If we have to test the gradient model, we have to use the values
             # in that category sorted
             if sort in ['ascendant', 'descendant']:
+                # We remove any None value in order to properly order
+                profiles.pop("None")
                 values = sort_dictionary_keys(profiles,
                                     descendant=(sort=='descendant'))
             else:
                 # We use the user defined sort of the values
+                sort = sort.split(',')
+                if len(values) != len(sort):
+                    raise ValueError, "The number of values in the sorted " + \
+                        "list and the number of values found in the mapping" + \
+                        " file are not the same."
                 values = sort
         # Build similarity matrix from bootstrapped profiles
         sim_mat, group_profiles = build_similarity_matrix(profiles, values)

@@ -11,5 +11,5 @@ Koren_oral_gut_plaque/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	SEX
 Martinez_resistant_starches/summarize_taxa/mapping_file_L3.txt	No	ELEVATION	No	COUNTRY	HOST_SUBJECT_ID	DIET	No	Yes
 Momozawa_colon_biopsies_and_stool/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	SEX	COUNTRY	HOST_SUBJECT_ID	No	AGE	DISEASE_STATUS
 Muegge_mammals_paper_human_samples_16S/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	No	COUNTRY	HOST_SUBJECT_ID	DIET	No	Yes
-Relman_antibiotic_timeseries/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	SEX	COUNTRY	HOST_SUBJECT_ID	No	AGE_IN_YEARS	ANTIBIOTIC
+Relman_antibiotic_timeseries/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	SEX	COUNTRY	HOST_SUBJECT_ID	No	AGE	ANTIBIOTIC
 Yatsunenko_global_gut_illumina/summarize_taxa/mapping_file_L3.txt	BODY_SITE	ELEVATION	SEX	COUNTRY	HOST_SUBJECT_ID	No	AGE	Yes
