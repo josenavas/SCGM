@@ -11,18 +11,21 @@ __status__ = "Development"
 
 VALID_MODELS = ['core', 'gradient', 'subpopulation']
 
-from os.path import join
+from os.path import join, exists
+from os import mkdir
 from SCGM.parse import parse_mapping_table
 from SCGM.util import check_exist_filepaths, unify_dictionaries, \
                         sort_dictionary_keys, write_similarity_matrix, \
                         write_unused_mapping_files
-from SCGM.profile import make_profiles_by_category, write_profile
-from SCGM.stats import build_similarity_matrix
+from SCGM.profile import make_profiles_by_category, write_profile, \
+                            build_consensus_profiles, subsample_profiles
+from SCGM.stats import build_similarity_matrix, build_consensus_matrix
 from SCGM.core_model_test import core_model_test
 from SCGM.subpopulation_model_test import subpopulation_model_test
 from SCGM.gradient_model_test import gradient_model_test
 
-def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, output_dir):
+def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort,
+    subsampling_depth, num_subsamples, output_dir):
     """ Tests the microbiome models listed in 'models'
 
     Inputs:
@@ -32,6 +35,8 @@ def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, o
         category: category to use in the gradient or subpopulation models
         sort: list of category values sorted, or 'ascendant' or 'descendant'
             to use in the gradient model
+        subsampling_depth: number of sequences to keep in each subsample
+        num_subsamples: number of subsamples
         output_dir: output dirpath to store the results
     """
     # Parse the mapping table file and get the normalized headers and 
@@ -97,21 +102,44 @@ def microbiome_model_test(base_dir, lines, models, taxa_level, category, sort, o
                         "list and the number of values found in the mapping" + \
                         " file are not the same."
                 values = sort
-        # Build similarity matrix from bootstrapped profiles
-        sim_mat, group_profiles = build_similarity_matrix(profiles, values)
-        # Store the similarity matrix in a file
-        sim_mat_fp = join(output_dir, 'similarity_matrix.txt')
-        write_similarity_matrix(sim_mat, values, sim_mat_fp)
+        # Create a folder to store the subsampled similarity matrices
+        sim_mat_folder = join(output_dir, 'subsampled_matrices')
+        if not exists(sim_mat_folder):
+            mkdir(sim_mat_folder)
+        # Initialize matrix list and profiles list
+        matrix_list = []
+        profiles_list = []
+        for i in range(num_subsamples):
+            # Subsample the profiles
+            subsampled_profiles = subsample_profiles(profiles, 
+                                                subsampling_depth, values)
+            # Build similarity matrix from bootstrapped profiles
+            sim_mat, group_profiles = build_similarity_matrix(
+                                                    subsampled_profiles, values)
+            matrix_list.append(sim_mat)
+            profiles_list.append(group_profiles)
+            # Store the similarity matrix in a file
+            sim_mat_fp = join(sim_mat_folder, 'similarity_matrix_%d.txt' % i)
+            write_similarity_matrix(sim_mat, values, sim_mat_fp)
+        # Build consensus matrix
+        consensus_mat = build_consensus_matrix(matrix_list)
+        # Store the consensus matrix in a file
+        cons_mat_fp = join(output_dir, 'consensus_matrix.txt')
+        write_similarity_matrix(consensus_mat, values, cons_mat_fp)
+        # Build consensus profiles
+        consensus_profiles = build_consensus_profiles(profiles_list)
         # Store the profile of each group
-        for i, prof in enumerate(group_profiles):
-            prof_fp = join(output_dir, str(values[i] + '_profile.txt'))
-            write_profile(prof, prof_fp)
+        for key in consensus_profiles:
+            prof_fp = join(output_dir, str(key + \
+                                                '_consensus_profile.txt'))
+            write_profile(consensus_profiles[key], prof_fp, consensus=True)
         # Store in a file the mapping files not used for the similarity matrix
         unused_maps_fp = join(output_dir, 'unused_mapping_files.txt')
         write_unused_mapping_files(unused_maps, unused_maps_fp)
         if 'subpopulation' in models:
             # Perform subpopulation model test
-            subpopulation_model_test(sim_mat, category, output_dir)
+            subpopulation_model_test(consensus_mat, category, output_dir)
         if 'gradient' in models:
             # Perform gradient model test
-            gradient_model_test(profiles, sim_mat, category, values, output_dir)
+            gradient_model_test(consensus_profiles, consensus_mat, category,
+                                                            values, output_dir)

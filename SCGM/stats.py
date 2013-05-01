@@ -9,7 +9,7 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from numpy import array, mean, std, zeros, dtype
+from numpy import array, mean, std, zeros, dtype, sqrt
 from numpy.random import randint
 from qiime.stats import quantile
 from SCGM.profile import normalize_profiles, compare_profiles
@@ -68,7 +68,7 @@ def build_similarity_matrix(profiles, key_order):
     size = len(key_order)
     sim_mat = zeros([size, size], dtype='4float64')
     # Initialize the group profiles list
-    group_profiles = []
+    group_profiles = {}
     # Populate the matrix
     for i in range(size):
         # The similarity between the profile of a value with itself is the
@@ -76,11 +76,11 @@ def build_similarity_matrix(profiles, key_order):
         profs = profiles[key_order[i]]
         if len(profs) == 1:
             sim_mat[i, i] = (1.0, 0.0, 1.0, 1.0)
-            group_profiles.append(profs[0])
+            group_profiles[key_order[i]] = profs[0]
         else:
             val_prof, val_shared, val_stdev, val_ci = bootstrap_profiles(profs)
             sim_mat[i, i] = (val_shared, val_stdev, val_ci[0], val_ci[1])
-            group_profiles.append(val_prof)
+            group_profiles[key_order[i]] = val_prof
         for j in range(i+1, size):
             # Get a list with the profiles of the two category values
             profs = []
@@ -110,3 +110,18 @@ def is_diagonal_matrix(matrix):
             if matrix[i ,j][0] != 0:
                 return False
     return True
+
+def build_consensus_matrix(matrix_list):
+    height, width, data = matrix_list[0].shape
+    consensus_matrix = zeros([height, width], dtype='4float64')
+    n = len(matrix_list)
+    for i in range(height):
+        for j in range(i, width):
+            values_list = [mat[i][j][0] for mat in matrix_list]
+            cons_mean = mean(values_list)
+            cons_stdev = std(values_list)
+            cons_ci_low = cons_mean - 1.96*(cons_stdev/sqrt(n))
+            cons_ci_high = cons_mean + 1.96*(cons_stdev/sqrt(n))
+            consensus_matrix[i][j] = consensus_matrix[j][i] = (cons_mean, 
+                                        cons_stdev, cons_ci_low, cons_ci_high)
+    return consensus_matrix

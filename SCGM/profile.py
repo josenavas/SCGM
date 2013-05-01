@@ -12,6 +12,8 @@ __status__ = "Development"
 
 from qiime.parse import parse_mapping_file_to_dict
 from qiime.filter import sample_ids_from_metadata_description
+from random import shuffle
+from numpy import mean, std, sqrt
 
 def normalize_profiles(profiles):
     """Make sure all profiles contain the same taxa keys
@@ -36,7 +38,7 @@ def normalize_profiles(profiles):
                 profile[key] = 0.0
     return profiles
 
-def compare_profiles(profiles, normalize=False):
+def compare_profiles(profiles, normalize=False, consensus=False):
     """ Compare the keys over all profiles and take the minimum value
 
         profiles: list of profiles
@@ -56,7 +58,10 @@ def compare_profiles(profiles, normalize=False):
         if key == "not_shared":
             continue
         #Find the minimum for the given taxa unit in the profiles
-        result[key] = min([prof[key] for prof in profiles])
+        if consensus:
+            result[key] = min([prof[key][0] for prof in profiles])
+        else:
+            result[key] = min([prof[key] for prof in profiles])
         share += result[key]
     #Add the not_shared unit as remaining precentage to sum to 100%
     result['not_shared'] = 1.0 - share
@@ -113,7 +118,7 @@ def make_profiles_by_category(mapping_fp, taxa_level, category):
                                                 sid, taxa_level) for sid in sids]
     return result
 
-def write_profile(profile, output_fp):
+def write_profile(profile, output_fp, consensus=False):
     """ Writes the profile to the file output_fp
 
     Inputs:
@@ -123,6 +128,48 @@ def write_profile(profile, output_fp):
     outf = open(output_fp, 'w')
     sorted_keys = sorted(profile.keys())
     for k in sorted_keys:
-            value = profile[k]
-            outf.write('\t'.join([k, str(value)]) + '\n')
+            if consensus:
+                values = profile[k]
+                str_values = [k]
+                str_values.extend(map(str, values))
+                outf.write('\t'.join(str_values) + '\n')
+            else:
+                value = profile[k]
+                outf.write('\t'.join([k, str(value)]) + '\n')
     outf.close()
+
+def subsample_profiles(profiles, subsampling_depth, values):
+    """
+    """
+    if subsampling_depth is None:
+        # If None, don't do subsampling
+        return profiles
+    if subsampling_depth == 0:
+        # Default the subsampling depth to the minimum among the categories
+        lengths = [len(profiles[key]) for key in profiles]
+        subsampling_depth = min(lengths)
+    subsampled_profiles = {}
+    for key in profiles:
+        if len(profiles[key]) < subsampling_depth:
+            if key in values:
+                values.remove(key)
+        else:
+            shuffle(profiles[key])
+            subsampled_profiles[key] = profiles[key][:subsampling_depth]
+    return subsampled_profiles
+
+def build_consensus_profiles(profiles_list):
+    consensus_profiles = {}
+    n = len(profiles_list)
+    for key in profiles_list[0]:
+        profiles = [group_profiles[key] for group_profiles in profiles_list]
+        c_prof = {}
+        for taxa in profiles[0]:
+            values_list = [prof[taxa] for prof in profiles]
+            cons_mean = mean(values_list)
+            cons_stdev = std(values_list)
+            cons_ci_low = cons_mean - 1.96*(cons_stdev/sqrt(n))
+            cons_ci_high = cons_mean + 1.96*(cons_stdev/sqrt(n))
+            c_prof[taxa] = (cons_mean, cons_stdev, cons_ci_low, cons_ci_high)
+        consensus_profiles[key] = c_prof
+    return consensus_profiles

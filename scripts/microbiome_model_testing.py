@@ -90,7 +90,19 @@ script_info['optional_options'] = [
             "separated list with the values of the given category in the order"+
             " that should be tested. If using a numerical value, you can use " +
             "'ascendant' or 'descendant' to sort the values ascendant or " +
-            "descendant, respectively.")
+            "descendant, respectively."),
+    make_option('--min_samples', type='int', default=None,
+        help="In case of testing the 'gradient' or 'subpopulation' models " +
+            "the number of samples to include in each category. If the " +
+            "category has less samples than specified, the category is not " +
+            "included in the test. If you don't provide any value, no " +
+            "subsampling will be performed. If the value is 0, the " + 
+            "subsampling depth will default to the minimum number of samples " +
+            "needed to include all the categories. [default: %default]"),
+    make_option('-n', '--num_subsamples', type='int', default=100,
+        help="In case of doing subsampling, the number of times the data is " +
+            "subsample before creating the consensus matrix. " +
+            "[default: %default]")
 ]
 script_info['version'] = __version__
 
@@ -119,6 +131,18 @@ if __name__ == '__main__':
     output_dir = opts.output_dir
     category = opts.category
     sort = opts.sort
+    subsampling_depth = opts.min_samples
+    num_subsamples = opts.num_subsamples
+
+    if subsampling_depth:
+        if subsampling_depth < 0:
+            raise ValueError, "The number of minimum samples to keep should" + \
+                " greater or equal to 0."
+
+    if num_subsamples < 1:
+        raise ValueError, "The number of subsamples has to be greater or " + \
+            "equal to 1."
+
 
     # Try to create the output folder
     if not exists(output_dir):
@@ -128,8 +152,8 @@ if __name__ == '__main__':
     map_table = open(map_table_fp, 'U')
 
     # Test the models
-    microbiome_model_test(input_dir, map_table, model, opts.level, category, sort,
-        output_dir)
+    microbiome_model_test(input_dir, map_table, model, opts.level, category,
+        sort, subsampling_depth, num_subsamples, output_dir)
 
     # Close the mapping table file
     map_table.close()
