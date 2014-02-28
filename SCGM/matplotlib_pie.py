@@ -9,35 +9,7 @@ __maintainer__ = "Joshua Shorenstein"
 __email__ = "joshua.shorenstein@gmail.com"
 __status__ = "Development"
 
-import  matplotlib.pyplot as plt
-
-
-def parse_file(filepath):
-    """Parses in profile files for pie chart plotting
-    Parameters
-    ----------
-    filepath: str
-        Filepath to the profile file
-
-    Results
-    -------
-    data: list of float
-    labels: list of str
-
-    Raises
-    ------
-    IOError
-        If file at filepath can't be opened
-    """
-    data = []
-    labels = []
-    fin = open(filepath, "rU")
-    for line in fin:
-        lineinfo = line.split("\t")
-        if float(lineinfo[1]) != 0.0:
-            data.append(float(lineinfo[1]))
-            labels.append(lineinfo[0].split(";")[-1])
-    return (data, labels)
+import matplotlib.pyplot as plt
 
 
 def plot_pie(data, outfilepath, labels=None, plot_title=""):
