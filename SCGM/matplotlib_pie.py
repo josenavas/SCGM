@@ -38,7 +38,7 @@ def plot_pie(data, outfilepath, labels=None, plot_title=""):
     elif len(data) != len(labels):
         raise RuntimeError("data and labels must be same length!")
 
-    if splitext(outfilepath).lower() not in (".png", ".pdf"):
+    if splitext(outfilepath)[1].lower() not in (".png", ".pdf"):
         raise ValueError("Output must be .pdf or .png")
 
     #process data for graphing
