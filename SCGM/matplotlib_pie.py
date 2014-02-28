@@ -36,6 +36,8 @@ def plot_pie(data, outfilepath, labels=None, plot_title=""):
         labels = ["" for i in range(0, len(data))]
     if len(data) != len(labels):
         raise RuntimeError("data and labels must be same length!")
+    if outfilepath.split(".")[-1] not in ("png", "pdf"):
+        raise ValueError("Output must be .pdf or .png")
 
     #process data for graphing
     data_labels = zip(labels, data)
