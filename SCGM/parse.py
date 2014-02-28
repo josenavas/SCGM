@@ -10,7 +10,7 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 
-def parse_file(filepath):
+def parse_profile_for_piechart(filepath):
     """Parses in profile files for pie chart plotting
     Parameters
     ----------

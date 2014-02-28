@@ -10,6 +10,7 @@ __email__ = "joshua.shorenstein@gmail.com"
 __status__ = "Development"
 
 import matplotlib.pyplot as plt
+from os.path import splitext
 
 
 def plot_pie(data, outfilepath, labels=None, plot_title=""):
@@ -20,9 +21,9 @@ def plot_pie(data, outfilepath, labels=None, plot_title=""):
     data: list of floats
         Data to plot (floats between 0.0-1.0)
     outfilepath: str
+        Output path and filename for chart (.png or .pdf)
     labels: list of str (optional)
         Must be in the same order as data
-        Output path and filename for chart (.png or .pdf)
     plot_title: str (optional)
 
     Raises
@@ -33,10 +34,11 @@ def plot_pie(data, outfilepath, labels=None, plot_title=""):
         If the output file extension is not .png or .pdf
     """
     if labels is None:
-        labels = ["" for i in range(0, len(data))]
-    if len(data) != len(labels):
+        labels = [""] * len(data)
+    elif len(data) != len(labels):
         raise RuntimeError("data and labels must be same length!")
-    if outfilepath.split(".")[-1] not in ("png", "pdf"):
+
+    if splitext(outfilepath).lower() not in (".png", ".pdf"):
         raise ValueError("Output must be .pdf or .png")
 
     #process data for graphing
