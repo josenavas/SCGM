@@ -9,10 +9,12 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from cogent.util.unit_test import TestCase, main
-from qiime.util import get_tmp_filename, load_qiime_config
 from os import remove, rmdir
+
+from qiime.util import load_qiime_config, TestCase, main
+
 from SCGM.core_model_test import core_model_test, get_profiles_list
+
 
 class CoreModelTestTest(TestCase):
     def setUp(self):
@@ -22,7 +24,7 @@ class CoreModelTestTest(TestCase):
 
         self._paths_to_clean_up = []
         self._dirs_to_clean_up = []
-        raise ValueError, "Test not implemented!!!"
+        raise ValueError("Test not implemented!!!")
 
     def tearDown(self):
         """ Clean temp files"""

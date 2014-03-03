@@ -9,11 +9,14 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
+from qiime.util import TestCase, main
+
 from SCGM.gradient_model_test import gradient_model_test
+
 
 class GradientModelTestTest(TestCase):
     def setUp(self):
-        raise ValueError, "Test not implemented!!!"
+        raise ValueError("Test not implemented!!!")
 
 if __name__ == '__main__':
     main()

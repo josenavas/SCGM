@@ -3,17 +3,19 @@
 __author__ = "Jose Antonio Navas Molina"
 __copyright__ = "Copyright 2013, SCGM course project"
 __credits__ = ["Jose Antonio Navas Molina", "Joshua Shorenstein",
-                "Elizabeth Lor"]
+               "Elizabeth Lor"]
 __license__ = "GPL"
 __version__ = "0.0.1-dev"
 __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
+from random import shuffle
+
+from numpy import mean, std, sqrt
 from qiime.parse import parse_mapping_file_to_dict
 from qiime.filter import sample_ids_from_metadata_description
-from random import shuffle
-from numpy import mean, std, sqrt
+
 
 def normalize_profiles(profiles):
     """Make sure all profiles contain the same taxa keys
@@ -21,9 +23,9 @@ def normalize_profiles(profiles):
         profiles: list of sample profiles
     """
     if len(profiles) == 0:
-        raise ValueError, "An empty profiles list cannot be normalized"
+        raise ValueError("An empty profiles list cannot be normalized")
     if len(profiles) == 1:
-        raise ValueError, "More than one profile is needed to normalize"
+        raise ValueError("More than one profile is needed to normalize")
 
     #Make a set of taxa keys for each profiles
     taxa = set([key for prof in profiles for key in prof.keys()])
@@ -38,6 +40,7 @@ def normalize_profiles(profiles):
                 profile[key] = 0.0
     return profiles
 
+
 def compare_profiles(profiles, normalize=False, consensus=False):
     """ Compare the keys over all profiles and take the minimum value
 
@@ -45,9 +48,9 @@ def compare_profiles(profiles, normalize=False, consensus=False):
         normalize: if True, the profiles will be normalized before comparison
     """
     if len(profiles) == 0:
-        raise ValueError, "Cannot compare an empty list"
+        raise ValueError("Cannot compare an empty list")
     if len(profiles) == 1:
-        raise ValueError, "Cannot compare only one profile"
+        raise ValueError("Cannot compare only one profile")
     if normalize:
         profiles = normalize_profiles(True)
     result = {}
@@ -67,8 +70,9 @@ def compare_profiles(profiles, normalize=False, consensus=False):
     result['not_shared'] = 1.0 - share
     return result
 
+
 def make_profile_by_sid(map_data, sid, taxa_level):
-    """ Create a profile for the sample ID passed 
+    """ Create a profile for the sample ID passed
     Inputs
         map_data: mapping file data from parse_mapping_file_to_dict()
         sid: the sample ID
@@ -83,13 +87,14 @@ def make_profile_by_sid(map_data, sid, taxa_level):
     profile['not_shared'] = 0.0
     return profile
 
+
 def make_profiles_by_category(mapping_fp, taxa_level, category):
     """ Creates a list of profiles for each unique value in the category
     Inputs:
         mapping_fp: filepath to the mapping file
         category: mapping file category to split data over
                   defaults to HOST_SUBJECT_ID
-    Returns a dictionary keyed by the values on that category and a list of 
+    Returns a dictionary keyed by the values on that category and a list of
         profiles as values
     """
     # Parse the mapping file
@@ -115,8 +120,9 @@ def make_profiles_by_category(mapping_fp, taxa_level, category):
             # Create the list with all the profiles of the sample IDs in this
             # category value
             result[value] = [make_profile_by_sid(mapping_data,
-                                                sid, taxa_level) for sid in sids]
+                             sid, taxa_level) for sid in sids]
     return result
+
 
 def write_profile(profile, output_fp, consensus=False):
     """ Writes the profile to the file output_fp
@@ -138,6 +144,7 @@ def write_profile(profile, output_fp, consensus=False):
                 outf.write('\t'.join([k, str(value)]) + '\n')
     outf.close()
 
+
 def subsample_profiles(profiles, subsampling_depth, values):
     """
     """
@@ -157,6 +164,7 @@ def subsample_profiles(profiles, subsampling_depth, values):
             shuffle(profiles[key])
             subsampled_profiles[key] = profiles[key][:subsampling_depth]
     return subsampled_profiles
+
 
 def build_consensus_profiles(profiles_list):
     consensus_profiles = {}

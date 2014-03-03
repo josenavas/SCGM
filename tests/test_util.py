@@ -9,11 +9,14 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from cogent.util.unit_test import TestCase, main
-from qiime.util import get_tmp_filename, load_qiime_config
 from os import remove, mkdir, rmdir
 from os.path import join
+
+from cogent.util.unit_test import TestCase, main
+from qiime.util import get_tmp_filename, load_qiime_config
+
 from SCGM.util import check_exist_filepaths
+
 
 class UtilTest(TestCase):
     def setUp(self):
@@ -64,14 +67,14 @@ class UtilTest(TestCase):
         base_dir, mapping_fps = self._create_directory_structure(correct=True)
         try:
             check_exist_filepaths(base_dir, mapping_fps)
-        except ValueError, e:
-            raise AssertionError, "ValueError raised"
+        except ValueError:
+            raise AssertionError("ValueError raised")
 
     def test_check_exist_filepaths_wrong(self):
         """Raises an error if a mapping file does not exists"""
         base_dir, mapping_fps = self._create_directory_structure(correct=False)
         self.assertRaises(ValueError, check_exist_filepaths, base_dir,
-            mapping_fps)
+                          mapping_fps)
 
 if __name__ == '__main__':
     main()

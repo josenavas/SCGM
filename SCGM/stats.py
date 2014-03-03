@@ -9,13 +9,14 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from numpy import array, mean, std, zeros, dtype, sqrt
+from numpy import array, mean, std, zeros, sqrt
 from numpy.random import randint
 from qiime.stats import quantile
 from SCGM.profile import normalize_profiles, compare_profiles
 
+
 def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
-    randfunc=randint):
+                       randfunc=randint):
     """Performs bootstrapping over the sample 'profiles'
 
     Inputs:
@@ -55,6 +56,7 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
 
     return profile, 1.0-profile['not_shared'], sample_stdev, ci
 
+
 def build_similarity_matrix(profiles, key_order):
     """Builds the similarity matrix between the profiles, using the given order
     Inputs:
@@ -91,25 +93,27 @@ def build_similarity_matrix(profiles, key_order):
             comp_prof, comp_shared, comp_stdev, comp_ci = \
                 bootstrap_profiles(profs)
             # Save the shared results on the similarity matrix
-            sim_mat[i,j] = sim_mat[j,i] = (comp_shared, comp_stdev, comp_ci[0],\
-                                            comp_ci[1])
+            sim_mat[i, j] = sim_mat[j, i] = (comp_shared, comp_stdev,
+                                             comp_ci[0], comp_ci[1])
     return sim_mat, group_profiles
 
+
 def is_diagonal_matrix(matrix):
-    """Returns true if the matrix is diagonal (zeros everywhere except diagonal)
+    """Returns true if the matrix is diagonal
     Inputs:
         matrix: the similarity matrix to test
     """
     size = len(matrix)
     for i in range(size):
-         # First check: all the values in the diagonal are different from zero
+         # 1st check: all the values in the diagonal are different from zero
         if matrix[i, i][0] == 0:
             return False
-        # Second check: all the values except the diagonal are different from zero
+        # 2nd check: all the values except the diagonal are different from zero
         for j in range(i+1, size):
-            if matrix[i ,j][0] != 0:
+            if matrix[i, j][0] != 0:
                 return False
     return True
+
 
 def build_consensus_matrix(matrix_list):
     height, width, data = matrix_list[0].shape
@@ -122,6 +126,8 @@ def build_consensus_matrix(matrix_list):
             cons_stdev = std(values_list)
             cons_ci_low = cons_mean - 1.96*(cons_stdev/sqrt(n))
             cons_ci_high = cons_mean + 1.96*(cons_stdev/sqrt(n))
-            consensus_matrix[i][j] = consensus_matrix[j][i] = (cons_mean, 
-                                        cons_stdev, cons_ci_low, cons_ci_high)
+            consensus_matrix[i][j] = consensus_matrix[j][i] = (cons_mean,
+                                                               cons_stdev,
+                                                               cons_ci_low,
+                                                               cons_ci_high)
     return consensus_matrix
