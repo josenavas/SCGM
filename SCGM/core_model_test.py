@@ -14,6 +14,7 @@ from qiime.parse import parse_mapping_file_to_dict
 from SCGM.profile import make_profile_by_sid, normalize_profiles, write_profile
 from SCGM.stats import bootstrap_profiles
 
+
 def get_profiles_list(base_dir, mapping_table, taxa_level):
     """"""
     profiles = []
@@ -29,6 +30,7 @@ def get_profiles_list(base_dir, mapping_table, taxa_level):
         for sid in mapping_data:
             profiles.append(make_profile_by_sid(mapping_data, sid, taxa_level))
     return profiles
+
 
 def core_model_test(base_dir, mapping_table, taxa_level, output_dir):
     """ Tests the core model
@@ -58,4 +60,4 @@ def core_model_test(base_dir, mapping_table, taxa_level, output_dir):
     outf.write("Mean: %f %%\n" % (mean * 100))
     outf.write("Standard deviation: %f %%\n" % (stdev * 100))
     outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
-                 % ((ci[0] * 100), (ci[1] * 100)))
+               % ((ci[0] * 100), (ci[1] * 100)))

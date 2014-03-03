@@ -11,8 +11,9 @@ __status__ = "Development"
 
 from numpy import zeros
 from cogent.util.unit_test import TestCase, main
-from SCGM.stats import bootstrap_profiles, build_similarity_matrix, \
-                        is_diagonal_matrix
+from SCGM.stats import (bootstrap_profiles, build_similarity_matrix,
+                        is_diagonal_matrix)
+
 
 class StatsTest(TestCase):
     def setUp(self):
@@ -22,13 +23,13 @@ class StatsTest(TestCase):
             {'taxa1': 0.15, 'taxa2': 0.22, 'taxa3': 0.15, 'taxa4': 0.48}]
 
     def test_bootstrap_profiles(self):
-        randfunc = lambda : 1
+        randfunc = lambda: 1
         obs_prof, obs_mean, obs_stdev, obs_ci = \
-                    bootstrap_profiles(self.profiles_list, randfunc = randfunc)
+            bootstrap_profiles(self.profiles_list, randfunc=randfunc)
 
-        exp_prof = {'taxa1': (0.10),'taxa2': (0.22),
-                    'taxa3': (0.15),'taxa4': (0.25)}
-        
+        exp_prof = {'taxa1': (0.10), 'taxa2': (0.22),
+                    'taxa3': (0.15), 'taxa4': (0.25)}
+        self.assertEqual(obs_prof, exp_prof)
 
     def test_build_similarity_matrix(self):
         pass

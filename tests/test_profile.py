@@ -2,7 +2,8 @@
 
 __author__ = "Joshua Shorenstein"
 __copyright__ = "Copyright 2013, SCGM course project"
-__credits__ = ["Joshua Shorenstein","Elizabeth Lor","Jose Antonio Navas Molina"]
+__credits__ = ["Joshua Shorenstein", "Elizabeth Lor",
+               "Jose Antonio Navas Molina"]
 __license__ = "GPL"
 __version__ = "0.0.1-dev"
 __maintainer__ = "Joshua Shorenstein"
@@ -12,8 +13,9 @@ __status__ = "Development"
 
 from cogent.util.unit_test import TestCase, main
 from os.path import dirname, join
-from SCGM.profile import (compare_profiles, normalize_profiles, make_profile, 
-                            make_profile_from_mapping)
+from SCGM.profile import (compare_profiles, normalize_profiles, make_profile,
+                          make_profile_from_mapping)
+
 
 class ProfileTests(TestCase):
     def setUp(self):
@@ -30,30 +32,30 @@ class ProfileTests(TestCase):
             {'taxa1': 0.10, 'taxa2': 0.50, 'taxa3': 0.15, 'taxa4': 0.25},
             {'taxa1': 0.15, 'taxa2': 0.22, 'taxa3': 0.15, 'taxa4': 0.48}]
         self.map_data = {
-            'sid1':{'HOST_SUBJECT_ID':'hsid_1',
-                    'map_h':'value1',
-                    'k_kingdom1': '0.2',
-                    'k_kingdom2': '0.5',
-                    'k_kingdom3': '0.3',},
-            'sid2':{'HOST_SUBJECT_ID':'hsid_2',
-                    'map_h':'value1',
-                    'k_kingdom1': '0.5',
-                    'k_kingdom2': '0.3',
-                    'k_kingdom3': '0.2',},
-            'sid3':{'HOST_SUBJECT_ID':'hsid_3',
-                    'map_h':'value2',
-                    'k_kingdom1': '0.3',
-                    'k_kingdom2': '0.2',
-                    'k_kingdom3': '0.5',}}
+            'sid1': {'HOST_SUBJECT_ID': 'hsid_1',
+                     'map_h': 'value1',
+                     'k_kingdom1': '0.2',
+                     'k_kingdom2': '0.5',
+                     'k_kingdom3': '0.3'},
+            'sid2': {'HOST_SUBJECT_ID': 'hsid_2',
+                     'map_h': 'value1',
+                     'k_kingdom1': '0.5',
+                     'k_kingdom2': '0.3',
+                     'k_kingdom3': '0.2'},
+            'sid3': {'HOST_SUBJECT_ID': 'hsid_3',
+                     'map_h': 'value2',
+                     'k_kingdom1': '0.3',
+                     'k_kingdom2': '0.2',
+                     'k_kingdom3': '0.5'}}
         self.mapping_fp = join(dirname(__file__),
-            "./support_files/test_mapping.txt")
+                               "./support_files/test_mapping.txt")
 
     def test_compare_profiles(self):
         '''Comparing three profiles, testing when each are the min and when\
          one taxa is equal '''
         result = compare_profiles(self.many_profiles)
-        exresult = {'taxa1': 0.10, 'taxa2': 0.22, 'taxa3': 0.15, 'taxa4': 0.25, 
-            'not_shared': 0.28}
+        exresult = {'taxa1': 0.10, 'taxa2': 0.22, 'taxa3': 0.15, 'taxa4': 0.25,
+                    'not_shared': 0.28}
         #make sure the keys in each are the same
         self.assertEquals(set(result.keys()), set(exresult.keys()))
         #make sure the values are correct-ish
@@ -67,7 +69,7 @@ class ProfileTests(TestCase):
         self.assertRaises(ValueError, compare_profiles, [])
         #single profile check
         self.assertRaises(ValueError, compare_profiles,
-            [{'taxa1': 0.20, 'taxa2': 0.30}])
+                          [{'taxa1': 0.20, 'taxa2': 0.30}])
 
     def test_normalize_profiles_fail(self):
         '''Make sure error raised when given an empty list or single profile'''
@@ -75,31 +77,33 @@ class ProfileTests(TestCase):
         self.assertRaises(ValueError, normalize_profiles, [])
         #single profile check
         self.assertRaises(ValueError, normalize_profiles,
-            [{'taxa1': 0.20, 'taxa2': 0.30}])
+                          [{'taxa1': 0.20, 'taxa2': 0.30}])
 
     def test_normalize_profiles_eq_len(self):
         '''Normalizing two profiles of equal length'''
         self.assertEquals(normalize_profiles(self.many_profiles),
-            [{'taxa1': 0.20, 'taxa2': 0.30, 'taxa3': 0.15, 'taxa4': 0.35,
-             'not_shared': 0.00},
-            {'taxa1': 0.10, 'taxa2': 0.50, 'taxa3': 0.15, 'taxa4': 0.25,
-             'not_shared': 0.00},
-            {'taxa1': 0.15, 'taxa2': 0.22, 'taxa3': 0.15, 'taxa4': 0.48,
-             'not_shared': 0.00}])
+                          [{'taxa1': 0.20, 'taxa2': 0.30, 'taxa3': 0.15,
+                            'taxa4': 0.35, 'not_shared': 0.00},
+                           {'taxa1': 0.10, 'taxa2': 0.50, 'taxa3': 0.15,
+                            'taxa4': 0.25, 'not_shared': 0.00},
+                           {'taxa1': 0.15, 'taxa2': 0.22, 'taxa3': 0.15,
+                            'taxa4': 0.48, 'not_shared': 0.00}])
 
     def test_normalize_profiles_neq_len(self):
         '''Normalizing two profiles with many diferent taxa'''
         self.assertEquals(normalize_profiles(self.uneven_profiles),
-            [{'taxa1': 0.20, 'taxa2': 0.00, 'taxa3': 0.30, 'taxa4': 0.00,
-             'taxa5': 0.15, 'taxa6': 0.35, 'taxa7': 0.00, 'not_shared': 0.00},
-            {'taxa1': 0.10, 'taxa2': 0.50, 'taxa3': 0.00, 'taxa4': 0.15,
-             'taxa5': 0.05, 'taxa6': 0.00, 'taxa7': 0.20, 'not_shared': 0.00}])
+                          [{'taxa1': 0.20, 'taxa2': 0.00, 'taxa3': 0.30,
+                           'taxa4': 0.00, 'taxa5': 0.15, 'taxa6': 0.35,
+                           'taxa7': 0.00, 'not_shared': 0.00},
+                           {'taxa1': 0.10, 'taxa2': 0.50, 'taxa3': 0.00,
+                            'taxa4': 0.15, 'taxa5': 0.05, 'taxa6': 0.00,
+                            'taxa7': 0.20, 'not_shared': 0.00}])
 
     def test_compare_profiles_not_shared(self):
-        '''Normalizing with one profile containing not_shared and one without'''
+        '''Normalizing with a profile containing not_shared and one without'''
         result = compare_profiles(self.not_shared_profiles)
         exresult = {'taxa1': 0.10, 'taxa2': 0.30, 'taxa3': 0.15, 'taxa4': 0.25,
-         'not_shared': 0.20}
+                    'not_shared': 0.20}
         #make sure the keys in each are the same
         self.assertEquals(set(result.keys()), set(exresult.keys()))
         #make sure the values are correct-ish
@@ -150,17 +154,17 @@ class ProfileTests(TestCase):
         ''' Creating profile from a mapping file filepath '''
         obs = make_profile_from_mapping(self.mapping_fp)
         exp = {
-            'hsid_1' : {
+            'hsid_1': {
                 'k_kingdom1': 0.2,
                 'k_kingdom2': 0.5,
                 'k_kingdom3': 0.3,
                 'not_shared': 0.0},
-            'hsid_2' : {
+            'hsid_2': {
                 'k_kingdom1': 0.5,
                 'k_kingdom2': 0.3,
                 'k_kingdom3': 0.2,
                 'not_shared': 0.0},
-            'hsid_3' : {
+            'hsid_3': {
                 'k_kingdom1': 0.3,
                 'k_kingdom2': 0.2,
                 'k_kingdom3': 0.5,
@@ -170,12 +174,12 @@ class ProfileTests(TestCase):
 
         obs = make_profile_from_mapping(self.mapping_fp, "map_h")
         exp = {
-            'value1' : {
+            'value1': {
                 'k_kingdom1': 0.2,
                 'k_kingdom2': 0.3,
                 'k_kingdom3': 0.2,
                 'not_shared': 0.3},
-            'value2' : {
+            'value2': {
                 'k_kingdom1': 0.3,
                 'k_kingdom2': 0.2,
                 'k_kingdom3': 0.5,

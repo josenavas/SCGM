@@ -10,7 +10,9 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from os.path import join
+
 from SCGM.stats import is_diagonal_matrix
+
 
 def subpopulation_model_test(dist_mat, category, output_dir):
     """ Tests the subpopulation model in the profiles distance matrix
