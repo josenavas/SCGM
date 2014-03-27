@@ -9,55 +9,46 @@ __maintainer__ = "Jose Antonio Navas Molina"
 __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
-from os.path import join
-from qiime.parse import parse_mapping_file_to_dict
-from SCGM.profile import make_profile_by_sid, normalize_profiles, write_profile
-from SCGM.stats import bootstrap_profiles
+from collections import namedtuple
+from json import loads
+
+from taxsim.stats import bootstrap_profiles
+
+CoreResults = namedtuple('CoreResults', ('model', 'profile', 'mean',
+                                         'stdev', 'ci'))
 
 
-def get_profiles_list(base_dir, mapping_table, taxa_level):
-    """"""
-    profiles = []
-    # Loop through all the mapping files
-    for map_file in mapping_table:
-        # Get the path to the mapping file
-        map_fp = join(base_dir, map_file)
-        # Parse the mapping file in a dictionary
-        map_f = open(map_fp, 'U')
-        mapping_data, comments = parse_mapping_file_to_dict(map_f)
-        map_f.close()
-        # Create a profile for each sample in this mapping file
-        for sid in mapping_data:
-            profiles.append(make_profile_by_sid(mapping_data, sid, taxa_level))
-    return profiles
-
-
-def core_model_test(base_dir, mapping_table, taxa_level, output_dir):
+def core_model_test(taxa_map, taxa_level, alpha=0.05, repetitions=1000):
     """ Tests the core model
-    Inputs:
-        base_dir: base common directory of all mapping files
-        mapping_table: dictionary with the mapping table information
-        output_dir: output directory
+
+    Parameters
+    ----------
+    taxa_map : MetadataMap
+        Mapping file with the normalized taxonomy profiles
+    taxa_level : int
+        The taxa level to test
+    alpha: float, optional
+        Alpha value used to calculate the level of confidence 1-alpha. Default:
+        0.05
+    repetitions: int, optional
+        Number of bootstrap repetitions. Default: 1000
+
+    Returns
+    -------
+    CoreResults
+        The results of testing the core model
     """
-    profiles = get_profiles_list(base_dir, mapping_table, taxa_level)
-    # Bootstrap profiles to get the results
-    profile, mean, stdev, ci = bootstrap_profiles(normalize_profiles(profiles))
-    # Write the bootstrapped profile
-    profile_fp = join(output_dir, 'core_model_profile.txt')
-    write_profile(profile, profile_fp)
-    # Write the test result
-    output_fp = join(output_dir, 'core_model_result.txt')
-    outf = open(output_fp, 'w')
-    outf.write("Results for the core model test:\n")
-    outf.write("Microbiome model: ")
+    # Get the profiles
+    profiles = [loads(value) for value in
+                taxa_map.getCategoryValues(taxa_map.SampleIds,
+                                           "TaxonomyProfile")]
+    # Test the core model
+    profile, mean, stdev, ci = bootstrap_profiles(profiles)
+    # Check which model is found
     if profile['not_shared'] < 0.5:
-        outf.write("Substantial core.\n")
+        model = "Substantial core"
     elif profile['not_shared'] < 1.0:
-        outf.write("Minimal core.\n")
+        model = "Minimal core"
     else:
-        outf.write('No core\n')
-    outf.write("\nStatistical results (amount shared):\n")
-    outf.write("Mean: %f %%\n" % (mean * 100))
-    outf.write("Standard deviation: %f %%\n" % (stdev * 100))
-    outf.write("Confidence interval for the mean: [%f %%, %f %%]\n"
-               % ((ci[0] * 100), (ci[1] * 100)))
+        model = "No core"
+    return CoreResults(model, profile, mean, stdev, ci)

@@ -13,7 +13,10 @@ __status__ = "Development"
 from itertools import izip
 from collections import defaultdict
 from json import dump
+
 from qiime.util import MetadataMap
+
+from taxsim.profile import normalize_profiles
 
 
 def collapse_metadata_maps(metadata_maps, categories):
@@ -65,6 +68,8 @@ def collapse_metadata_maps(metadata_maps, categories):
                 taxa_vals = [0.0] * len(sample_ids)
             for sid, tv in izip(sample_ids, taxa_vals):
                 profiles[sid][taxa] = tv
+    # Normalize profiles
+    normalize_profiles(profiles)
     # Add the taxonomy profiles to each sample
     for sid in sample_metadata:
         sample_metadata[sid]['TaxonomyProfile'] = dump(profiles[sid],

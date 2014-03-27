@@ -20,25 +20,34 @@ from qiime.filter import sample_ids_from_metadata_description
 def normalize_profiles(profiles):
     """Make sure all profiles contain the same taxa keys
 
-        profiles: list of sample profiles
-    """
-    if len(profiles) == 0:
-        raise ValueError("An empty profiles list cannot be normalized")
-    if len(profiles) == 1:
-        raise ValueError("More than one profile is needed to normalize")
+    Parameters
+    ----------
+    profiles: dict of {string: dict of {string: float}}
+        The profiles to be normalized keyed by the sample id they belong to
 
-    #Make a set of taxa keys for each profiles
-    taxa = set([key for prof in profiles for key in prof.keys()])
+    Raises
+    ------
+    ValueError
+        If num of profiles < 2
+    """
+    if len(profiles) < 2:
+        raise ValueError("At least 2 profiles are needed to normalize")
+
+    # Make a set of taxa keys for all profiles
+    taxa = set(key for sid, prof in profiles.iteritems() for key in prof)
     if 'not_shared' not in taxa:
-        #Add the 'not_shared' in the taxa
+        # Add the 'not_shared' in the taxa
         taxa.add('not_shared')
 
     for key in taxa:
-        for profile in profiles:
+        for sid, profile in profiles.iteritems():
             if key not in profile:
-                #If the taxa key is not in the profile, set it equal to 0.0
+                # If the taxa key is not in the profile, set it equal to 0.0
                 profile[key] = 0.0
-    return profiles
+
+
+
+
 
 
 def compare_profiles(profiles, normalize=False, consensus=False):
