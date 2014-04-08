@@ -62,6 +62,8 @@ def collapse_metadata_maps(metadata_maps, categories=None):
         for taxa in taxonomies:
             try:
                 taxa_vals = metamap.getCategoryValues(sample_ids, taxa)
+                # must coerce all to floats, as some stored as strings
+                taxa_vals = map(float, taxa_vals)
             except KeyError:
                 taxa_vals = [0.0] * len(sample_ids)
             for sid, tv in izip(sample_ids, taxa_vals):
