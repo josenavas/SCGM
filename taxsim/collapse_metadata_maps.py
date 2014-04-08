@@ -12,14 +12,14 @@ __status__ = "Development"
 
 from itertools import izip
 from collections import defaultdict
-from json import dump
+from json import dumps
 
 from qiime.util import MetadataMap
 
 from taxsim.profile import normalize_profiles
 
 
-def collapse_metadata_maps(metadata_maps, categories):
+def collapse_metadata_maps(metadata_maps, categories=None):
     """
     Parameters
     ----------
@@ -39,10 +39,8 @@ def collapse_metadata_maps(metadata_maps, categories):
             categories = categories.intersection(metamap.CategoryNames)
 
     # Get all the taxonomies present in all the metadata maps
-    taxonomies = set([cat for cat in metadata_maps[0].CategoryNames
-                      if cat.startswith('k_')])
-    for metamap in metadata_maps[1:]:
-            taxonomies = taxonomies.union(metamap.CategoryNames)
+    taxonomies = set([cat for cat in metamap.CategoryNames
+                      if cat.startswith('k_') for metamap in metadata_maps])
 
     sample_metadata = defaultdict(dict)
     profiles = defaultdict(dict)
@@ -72,7 +70,7 @@ def collapse_metadata_maps(metadata_maps, categories):
     normalize_profiles(profiles)
     # Add the taxonomy profiles to each sample
     for sid in sample_metadata:
-        sample_metadata[sid]['TaxonomyProfile'] = dump(profiles[sid],
-                                                       separators=(',', ':'))
+        sample_metadata[sid]['TaxonomyProfile'] = dumps(profiles[sid],
+                                                        separators=(',', ':'))
 
     return MetadataMap(sample_metadata, "")
