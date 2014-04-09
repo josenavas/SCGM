@@ -61,7 +61,7 @@ def collapse_metadata_maps(metadata_maps, categories=None):
         # Get the samples from the current metadata map
         sample_ids = metamap.SampleIds
         # make sure sample ids are unique
-        if len(seen_ids.intersection(sample_ids)) > 0:
+        if not seen_ids.isdisjoint(sample_ids):
             raise ValueError("Duplicate sample ids found: %s" %
                              str(seen_ids.intersection(sample_ids)))
         else:
