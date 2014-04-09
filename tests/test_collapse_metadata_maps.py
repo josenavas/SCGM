@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-__author__ = "Jose Antonio Navas Molina"
+__author__ = "Joshua Shorenstein"
 __copyright__ = "Copyright 2013, SCGM course project"
-__credits__ = ["Jose Antonio Navas Molina"]
+__credits__ = ["Joshua Shorenstein"]
 __license__ = "GPL"
 __version__ = "0.0.1-dev"
 __maintainer__ = "Jose Antonio Navas Molina"
-__email__ = "josenavasmolina@gmail.com"
+__email__ = "joshua.shorenstein@colorado.edu"
 __status__ = "Development"
 
 from unittest import TestCase, main
@@ -23,6 +23,8 @@ class TestCollapseMetadataMaps(TestCase):
                                                  "test_mapping.txt")
         self.map2 = MetadataMap.parseMetadataMap("./support_files/"
                                                  "test_mapping2.txt")
+        self.map3 = MetadataMap.parseMetadataMap("./support_files/"
+                                                 "test_mapping3.txt")
         self.maplist = [self.map1, self.map2]
 
     def test_collapse_metadata_maps_sample_ids(self):
@@ -88,6 +90,15 @@ class TestCollapseMetadataMaps(TestCase):
         exp_columns = ["HOST_SUBJECT_ID", "TaxonomyProfile"]
         self.assertEqual(exp_columns, obs_columns)
 
+    def test_collapse_metadata_maps_duplicate_sampleid(self):
+        """Make sure error raised if duplicate sample ids found"""
+        self.assertRaises(ValueError, collapse_metadata_maps,
+                          [self.map1, self.map1])
+
+    def test_collapse_metadata_maps_bad_float_conversion(self):
+        """Make sure error raised if cannot convert taxa value to float"""
+        self.assertRaises(ValueError, collapse_metadata_maps,
+                          [self.map1, self.map3])
 
 if __name__ == "__main__":
     main()

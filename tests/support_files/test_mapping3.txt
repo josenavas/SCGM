@@ -1,0 +1,4 @@
+#SampleID	HOST_SUBJECT_ID	map_r	k_kingdom1	k_kingdom2	k_kingdom4
+sid4	hsid_1	value3	0.2	0.5	0.3
+sid5	hsid_2	value3	0.5	0.3	0.2
+sid6	hsid_3	value4	0.8	0.1	chicken
