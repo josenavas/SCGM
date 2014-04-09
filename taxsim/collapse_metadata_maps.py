@@ -25,8 +25,14 @@ def collapse_metadata_maps(metadata_maps, categories=None):
     ----------
     metadata_maps : list of MetadataMap
         The metadata map object to collapse in a single metadata map
-    categories : list of strings
-        The
+    categories : list of strings (optional)
+        The categories to include in the collapsed metadata map. If not given,
+        defaults to those categories shared over all metadata maps
+
+    Notes
+    -----
+    ALL SAMPLE IDS MUST BE UNIQUE IN ALL STUDIES! If they are not, they will be
+    overwritten when a duplicate is found.
     """
     if categories:
         categories = set(categories)
@@ -39,8 +45,11 @@ def collapse_metadata_maps(metadata_maps, categories=None):
             categories = categories.intersection(metamap.CategoryNames)
 
     # Get all the taxonomies present in all the metadata maps
-    taxonomies = set([cat for cat in metamap.CategoryNames
-                      if cat.startswith('k_') for metamap in metadata_maps])
+    taxonomies = set()
+    for metamap in metadata_maps:
+        for cat in metamap.CategoryNames:
+            if cat.startswith('k_'):
+                taxonomies.add(cat)
 
     sample_metadata = defaultdict(dict)
     profiles = defaultdict(dict)
@@ -62,7 +71,7 @@ def collapse_metadata_maps(metadata_maps, categories=None):
         for taxa in taxonomies:
             try:
                 taxa_vals = metamap.getCategoryValues(sample_ids, taxa)
-                # must coerce all to floats, as some stored as strings
+                # must coerce all to floats, as some stored as str or int
                 taxa_vals = map(float, taxa_vals)
             except KeyError:
                 taxa_vals = [0.0] * len(sample_ids)
