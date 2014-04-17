@@ -25,8 +25,16 @@ def collapse_metadata_maps(metadata_maps, categories=None):
     ----------
     metadata_maps : list of MetadataMap
         The metadata map object to collapse in a single metadata map
-    categories : list of strings
-        The
+    categories : list of strings (optional)
+        The categories to include in the collapsed metadata map. If not given,
+        defaults to those categories shared over all metadata maps
+
+
+    Raises
+    ------
+    ValueError
+        Duplicate sampleid found between studies
+        Can not convert a taxa summary value to float
     """
     if categories:
         categories = set(categories)
@@ -39,15 +47,25 @@ def collapse_metadata_maps(metadata_maps, categories=None):
             categories = categories.intersection(metamap.CategoryNames)
 
     # Get all the taxonomies present in all the metadata maps
-    taxonomies = set([cat for cat in metamap.CategoryNames
-                      if cat.startswith('k_') for metamap in metadata_maps])
+    taxonomies = set()
+    for metamap in metadata_maps:
+        for cat in metamap.CategoryNames:
+            if cat.startswith('k_'):
+                taxonomies.add(cat)
 
     sample_metadata = defaultdict(dict)
     profiles = defaultdict(dict)
     # Loop through all the metadata maps
+    seen_ids = set()
     for metamap in metadata_maps:
         # Get the samples from the current metadata map
         sample_ids = metamap.SampleIds
+        # make sure sample ids are unique
+        if not seen_ids.isdisjoint(sample_ids):
+            raise ValueError("Duplicate sample ids found: %s" %
+                             str(seen_ids.intersection(sample_ids)))
+        else:
+            seen_ids.update(sample_ids)
         # Loop through all the categories that should be included
         # in the collapsed metadata map
         for category in categories:
@@ -62,8 +80,12 @@ def collapse_metadata_maps(metadata_maps, categories=None):
         for taxa in taxonomies:
             try:
                 taxa_vals = metamap.getCategoryValues(sample_ids, taxa)
+                # must coerce all to floats, as some stored as str or int
+                taxa_vals = map(float, taxa_vals)
             except KeyError:
                 taxa_vals = [0.0] * len(sample_ids)
+            except ValueError:
+                raise ValueError("Cannot convert taxa value to float!")
             for sid, tv in izip(sample_ids, taxa_vals):
                 profiles[sid][taxa] = tv
     # Normalize profiles

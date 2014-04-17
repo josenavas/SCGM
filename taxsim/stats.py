@@ -12,7 +12,7 @@ __status__ = "Development"
 from numpy import array, mean, std, zeros, sqrt
 from numpy.random import randint
 from qiime.stats import quantile
-from SCGM.profile import normalize_profiles, compare_profiles
+from taxsim.profile import normalize_profiles, compare_profiles
 
 
 def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
@@ -20,7 +20,7 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
     """Performs bootstrapping over the sample 'profiles'
 
     Inputs:
-        profiles: list of profiles
+        profiles: list of normalized profiles
         alpha: defines the confidence interval as 1 - alpha
         repetitions: number of bootstrap iterations
         randfunc: random function for generate the bootstrap samples
@@ -32,7 +32,6 @@ def bootstrap_profiles(profiles, alpha=0.05, repetitions=1000,
         ci: the confidence interval for the bootstrap mean
     """
     length = len(profiles)
-    normalize_profiles(profiles)
     boot_shared = []
     boot_profiles = []
     for i in range(repetitions):

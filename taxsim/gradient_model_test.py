@@ -10,8 +10,8 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from os.path import join
-from SCGM.profiles import compare_profiles
-from SCGM.stats import bootstrap_profiles
+from taxsim.profiles import compare_profiles
+from taxsim.stats import bootstrap_profiles
 
 
 def gradient_subarray_check(cons_profs, sim_mat, sorted_values, i, j):

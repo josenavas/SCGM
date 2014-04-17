@@ -46,20 +46,14 @@ def normalize_profiles(profiles):
                 profile[key] = 0.0
 
 
-
-
-
-
 def compare_profiles(profiles, normalize=False, consensus=False):
     """ Compare the keys over all profiles and take the minimum value
 
         profiles: list of profiles
         normalize: if True, the profiles will be normalized before comparison
     """
-    if len(profiles) == 0:
-        raise ValueError("Cannot compare an empty list")
-    if len(profiles) == 1:
-        raise ValueError("Cannot compare only one profile")
+    if len(profiles) < 2:
+        raise ValueError("Need at least 2 profile to compare!")
     if normalize:
         profiles = normalize_profiles(True)
     result = {}
