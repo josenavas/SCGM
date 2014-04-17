@@ -11,6 +11,7 @@ __status__ = "Development"
 
 from unittest import TestCase, main
 from json import loads
+from os.path import dirname, abspath, join
 
 from qiime.util import MetadataMap
 
@@ -19,12 +20,13 @@ from taxsim.collapse_metadata_maps import collapse_metadata_maps
 
 class TestCollapseMetadataMaps(TestCase):
     def setUp(self):
-        self.map1 = MetadataMap.parseMetadataMap("./support_files/"
-                                                 "test_mapping.txt")
-        self.map2 = MetadataMap.parseMetadataMap("./support_files/"
-                                                 "test_mapping2.txt")
-        self.map3 = MetadataMap.parseMetadataMap("./support_files/"
-                                                 "test_mapping3.txt")
+        base = dirname(abspath(__file__))
+        self.map1 = MetadataMap.parseMetadataMap(join(base, "support_files/"
+                                                 "test_mapping.txt"))
+        self.map2 = MetadataMap.parseMetadataMap(join(base, "support_files/"
+                                                 "test_mapping2.txt"))
+        self.map3 = MetadataMap.parseMetadataMap(join(base, "support_files/"
+                                                 "test_mapping3.txt"))
         self.maplist = [self.map1, self.map2]
 
     def test_collapse_metadata_maps_sample_ids(self):
