@@ -51,7 +51,7 @@ class TestCollapseMetadataMaps(TestCase):
     def test_collapse_metadata_maps_profiles(self):
         """Makes sure Taxonomy Profile for samples are created correctly"""
         collapsed = collapse_metadata_maps(self.maplist)
-        #build a dictionary of profiles
+        # build a dictionary of profiles
         obs_profiles = {}
         for sampleid in collapsed.SampleIds:
             taxaprofile = loads(collapsed.getCategoryValue(sampleid,
