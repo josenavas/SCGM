@@ -31,7 +31,8 @@ class TestCollapseMetadataMaps(TestCase):
 
     def test_collapse_metadata_maps_sample_ids(self):
         """Makes sure samples from two studies with same id loaded uniquely"""
-        pass
+        maplist = [self.map1, self.map1]
+        self.assertRaises(ValueError, collapse_metadata_maps, maplist)
 
     def test_collapse_metadata_maps_taxa(self):
         """Makes sure all taxa are parsed out correctly"""
