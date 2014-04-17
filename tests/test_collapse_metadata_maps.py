@@ -14,20 +14,34 @@ from json import loads
 from os.path import dirname, abspath, join
 
 from qiime.util import MetadataMap
+from qiime.parse import parse_mapping_file_to_dict
 
 from taxsim.collapse_metadata_maps import collapse_metadata_maps
 
 
 class TestCollapseMetadataMaps(TestCase):
     def setUp(self):
-        base = dirname(abspath(__file__))
-        self.map1 = MetadataMap.parseMetadataMap(join(base, "support_files/"
-                                                 "test_mapping.txt"))
-        self.map2 = MetadataMap.parseMetadataMap(join(base, "support_files/"
-                                                 "test_mapping2.txt"))
-        self.map3 = MetadataMap.parseMetadataMap(join(base, "support_files/"
-                                                 "test_mapping3.txt"))
+        self.base = dirname(abspath(__file__))
+        self.map1 = MetadataMap.parseMetadataMap(join(self.base,
+                                                      "support_files/"
+                                                      "test_mapping.txt"))
+        self.map2 = MetadataMap.parseMetadataMap(join(self.base,
+                                                      "support_files/"
+                                                      "test_mapping2.txt"))
+        self.map3 = MetadataMap.parseMetadataMap(join(self.base,
+                                                      "support_files/"
+                                                      "test_mapping3.txt"))
         self.maplist = [self.map1, self.map2]
+
+    def test_collapsed_map(self):
+        """"""
+        obs = collapse_metadata_maps(self.maplist)
+        exp_map, comments = parse_mapping_file_to_dict(join(self.base,
+                                                            "support_files/col"
+                                                            "lapsed_map.txt"),
+                                                       strip_quotes=False)
+        exp = MetadataMap(exp_map, comments)
+        self.assertEqual(str(obs), str(exp))
 
     def test_collapse_metadata_maps_sample_ids(self):
         """Makes sure samples from two studies with same id loaded uniquely"""
@@ -48,7 +62,8 @@ class TestCollapseMetadataMaps(TestCase):
         """Makes sure all the metadata columns are parsed out correctly"""
         collapsed = collapse_metadata_maps(self.maplist)
         obs_columns = set(collapsed.CategoryNames)
-        exp_columns = set(["HOST_SUBJECT_ID", "TaxonomyProfile"])
+        exp_columns = set(["HOST_SUBJECT_ID", "TaxonomyProfile", 'Description',
+                           'BarcodeSequence', 'LinkerPrimerSequence'])
         self.assertEqual(exp_columns, obs_columns)
 
     def test_collapse_metadata_maps_profiles(self):

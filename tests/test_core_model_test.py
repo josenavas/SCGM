@@ -10,21 +10,14 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from os import remove, rmdir
+from unittest import TestCase, main
 
-from qiime.util import load_qiime_config, TestCase, main
-
-from SCGM.core_model_test import core_model_test, get_profiles_list
+from SCGM.core_model_test import core_model_test
 
 
 class CoreModelTestTest(TestCase):
     def setUp(self):
-        # Get QIIME's temp dir
-        self.qiime_config = load_qiime_config()
-        self.tmp_dir = self.qiime_config['temp_dir'] or '/tmp/'
-
-        self._paths_to_clean_up = []
-        self._dirs_to_clean_up = []
-        raise ValueError("Test not implemented!!!")
+        """"""
 
     def tearDown(self):
         """ Clean temp files"""

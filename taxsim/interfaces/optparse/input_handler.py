@@ -11,10 +11,13 @@ __email__ = "josenavasmolina@gmail.com"
 __status__ = "Development"
 
 from qiime.util import MetadataMap
+from qiime.parse import parse_mapping_file_to_dict
 
 
 def metadata_map_list_handler(metadata_map_fps):
     """"""
     for metamap_fp in metadata_map_fps:
         with open(metamap_fp, 'U') as metamap_f:
-            yield MetadataMap.parseMetadataMap(metamap_f)
+            map_data, comments = parse_mapping_file_to_dict(metamap_f,
+                                                            strip_quotes=False)
+            yield MetadataMap(map_data, comments)

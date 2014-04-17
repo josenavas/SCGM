@@ -1,0 +1,7 @@
+#SampleID	BarcodeSequence	LinkerPrimerSequence	TaxonomyProfile	HOST_SUBJECT_ID	Description
+sid1	AC	ACGTGTG	{"k_kingdom1":0.2,"k_kingdom3":0.3,"k_kingdom2":0.5,"k_kingdom4":0.0,"not_shared":0.0}	hsid_1	sid4
+sid2	AC	ACGTGTG	{"k_kingdom1":0.5,"k_kingdom3":0.2,"k_kingdom2":0.3,"k_kingdom4":0.0,"not_shared":0.0}	hsid_2	sid5
+sid3	AC	ACGTGTG	{"k_kingdom1":0.3,"k_kingdom3":0.5,"k_kingdom2":0.2,"k_kingdom4":0.0,"not_shared":0.0}	hsid_3	sid6
+sid4	AC	ACGTGTG	{"k_kingdom1":0.2,"k_kingdom3":0.0,"k_kingdom2":0.5,"k_kingdom4":0.3,"not_shared":0.0}	hsid_1	sid4
+sid5	AC	ACGTGTG	{"k_kingdom1":0.5,"k_kingdom3":0.0,"k_kingdom2":0.3,"k_kingdom4":0.2,"not_shared":0.0}	hsid_2	sid5
+sid6	AC	ACGTGTG	{"k_kingdom1":0.8,"k_kingdom3":0.0,"k_kingdom2":0.1,"k_kingdom4":0.1,"not_shared":0.0}	hsid_3	sid6
